@@ -30,6 +30,22 @@ $ node server/server.js
  
    - For creating a new user
      * change postman HTTP method to post and change the route url  http://localhost:3000/users and select body. inside body select row and change formate as a JSON 
+     * create a object with the valid field
+     
+     ex: 
+     ```bash
+     {
+       "firstname":"Arun",
+       "lastname":"Kavale",
+       "username":"Arunkavale",
+       "password":"Arun25512",
+       "email":"arunkavale@gmail.com",
+       "industrie":"software",
+       "OrganisationName":"AK",
+       "phone":9766999425
+     }
+     
+     ```
      
      
 
