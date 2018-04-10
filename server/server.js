@@ -136,7 +136,7 @@ app.delete('/configurations/:id', authenticate, (req, res) => {
  */
 app.patch('/configurations/:id', authenticate, (req, res) => {
   var id = req.params.id;
-  var body = _.pick(req.body, ['text', 'completed']);
+  var body = req.body;
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
