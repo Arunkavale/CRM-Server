@@ -26,5 +26,6 @@ After the install process is over, you'll be able to run your application using 
 ```bash
 $ node server/server.js 
 ```
+* open postman
 
 
