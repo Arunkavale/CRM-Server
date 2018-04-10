@@ -6,14 +6,21 @@ Before you begin make sure you have installed all of the following prerequisites
 * Postman - [Download & Install Postman](https://www.getpostman.com/).
 
 ***************************************************************************
-Download the full CRM-Server project in zip file after completion of download unzip the file.
+Follwoing are the steps of deploying the application on local machine
 
+* Download the full CRM-Server project in zip file 
+* after completion of download unzip the file.
 * open a terminal.
-* Change the location of terminal useing cd Commnad.
+* Change the location of terminal to project folder useing cd Command.
 * install the all dependencies using npm.
+
 ```bash
 $ npm install 
 ```
 
-
+* run the server using following command
  
+```bash
+ $ node server/server.js
+ ```
+ *************************************************************************
