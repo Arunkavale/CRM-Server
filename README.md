@@ -30,7 +30,7 @@ $ node server/server.js
  
    - For creating a new user
      * change postman HTTP method to post and change the route url  http://localhost:3000/users and select body. inside body select row and change formate as a JSON 
-     * create a object with the valid field
+     * create a object with the valid field and send the request as example
      
      ex: 
      ```bash
@@ -42,10 +42,18 @@ $ node server/server.js
        "email":"arunkavale@gmail.com",
        "industrie":"software",
        "OrganisationName":"AK",
-       "phone":9766999425
+       "phone":9010101010
      }
      
      ```
+     * after completion of signup user then automatically user account will login and server will send  user-auth Token in Headers. copy that user-auth Token data.     
+     Ex :
+     
+     ```bash 
+     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YWNjNWYwM2Y4OWM5MTBjMmNmM2E3MDUiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNTIzMzQzMTA4fQ.I3nYbQqkidXiMjRP12UMl8i2Fgr51ulqXDQzhVbDw-I
+     ```
+     
+     
      
      
 
