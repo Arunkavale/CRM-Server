@@ -27,5 +27,9 @@ After the install process is over, you'll be able to run your application using 
 $ node server/server.js 
 ```
 * open postman
-
+ 
+   - For creating a new user
+     * change postman HTTP method to post and change the route url  http://localhost:3000/users and select body. inside body select row and change formate as a JSON 
+     
+     
 
