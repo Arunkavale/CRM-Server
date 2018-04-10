@@ -1,0 +1,7 @@
+{
+  "development": {
+    "PORT": 3000,
+    "MONGODB_URI": "mongodb://localhost:27017/itelPro",
+    "JWT_SECRET": "pojiaj234oi234oij234oij4"
+  }
+}
