@@ -46,14 +46,31 @@ $ node server/server.js
      }
      
      ```
-     * after completion of signup user then automatically user account will login and server will send  user-auth Token in Headers. copy that user-auth Token data.     
+     * after completion of signup user then automatically user account will login and server will send response user-auth Token in Headers. copy that user-auth Token data.     
      Ex :
+     
+     
      
      ```bash 
      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YWNjNWYwM2Y4OWM5MTBjMmNmM2E3MDUiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNTIzMzQzMTA4fQ.I3nYbQqkidXiMjRP12UMl8i2Fgr51ulqXDQzhVbDw-I
      ```
      
      
+   - For Configuring industries service
+   
+       * change postman HTTP method to post and change the route url  http://localhost:3000/configurations and inside Headers create a key as a user-auth and paste the user-auth data into value field. Then select body inside body select row and change formate as a JSON.
+       * create a object with the valid field and send the request.
+       Ex : 
+       
+       
+       ```bash
+       {
+         "serviceName":"Website development",
+         "price":100000,
+         "tax":2000,
+         "GST":40000
+        }
+   
      
      
 
