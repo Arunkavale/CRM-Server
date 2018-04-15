@@ -168,7 +168,7 @@ UserSchema.statics.findByCredentials = function (email, password) {
 
 /**
  * 
- * Encrypt the user password using bcrypt.js
+ * Encrypt the user password using bcrypt.js nodejs library
  * 
  */
 UserSchema.pre('save', function (next) {

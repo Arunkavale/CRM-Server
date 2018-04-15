@@ -188,7 +188,11 @@ app.delete('/configurations/:id', authenticate, (req, res) => {
  */
 app.patch('/configurations/:id', authenticate, (req, res) => {
   var id = req.params.id;
+<<<<<<< HEAD
   var body =req.body;
+=======
+  var body = req.body;
+>>>>>>> b4aec8d9917231c5363e3e57f3c9080b875508e7
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
@@ -230,11 +234,7 @@ app.post('/users', (req, res) => {
   })
 });
 
- /**
- * 
- * Check User
- * 
- */
+
 app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
 });
