@@ -10,7 +10,7 @@ const bcrypt = require('bcryptjs');
  * User Model
  * 
  */
-var UserSchema = new mongoose.Schema({
+var subscriberSchema = new mongoose.Schema({
   firstname: {
     type: String,
     require: true,
@@ -23,7 +23,7 @@ var UserSchema = new mongoose.Schema({
     minlength: 1,
     required: [true, 'lastname is required']
   },
-  username: {
+  company_name: {
     type: String,
     require: true,
     minlength: 6,
@@ -45,22 +45,57 @@ var UserSchema = new mongoose.Schema({
     require: true
     // minlength: 8
   },
+  city: {
+    type: String,
+    require: true
+    // minlength: 8
+  },
   email: {
     type: String,
     required: true,
     trim: true,
     minlength: 5,
-    unique: true,
+    unique: false,
     validate: {
       validator: validator.isEmail,
       message: '{VALUE} is not a valid Email address'
     }
   },
-  customer_id:{
+  state: {
+    type: String,
+    require: true
+    // minlength: 8
+  },
+  country: {
+    type: String,
+    require: true
+    // minlength: 8
+  },
+  pincode: {
+    type: String,
+    require: true
+    // minlength: 8
+  },
+  mobile_number: {
+    type: String,
+    require: true
+    // minlength: 8
+  },
+  Industry: {
+    type: String,
+    require: true
+    // minlength: 8
+  },
+  package: {
+    type: String,
+    require: true
+    // minlength: 8
+  },
+ 
+  susbscription_until:{
     type: String,
     require: true,
     minlength: 1
-    
   },
   // industrie: {
   //   type: String,
@@ -74,18 +109,18 @@ var UserSchema = new mongoose.Schema({
   //   trim: true,
   //   minlength: 2,
   // },
-  phone: {
-    type: Number,
-    minlength: 10,
-    validate: {
-      validator: function(v) {
-        return /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/.test(v);
-      },
-      message: '{VALUE} is not a valid phone number!'
-    },
-    required: [true, 'User phone number required'],
-    unique: true
-  },
+//   phone: {
+//     type: Number,
+//     minlength: 10,
+//     validate: {
+//       validator: function(v) {
+//         return /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/.test(v);
+//       },
+//       message: '{VALUE} is not a valid phone number!'
+//     },
+//     required: [true, 'User phone number required'],
+//     unique: true
+//   },
   created: {
     type: Date,
     default: Date.now
@@ -103,14 +138,14 @@ var UserSchema = new mongoose.Schema({
 });
 
 
-UserSchema.methods.toJSON = function () {
+subscriberSchema.methods.toJSON = function () {
   var user = this;
   var userObject = user.toObject();
-  return _.pick(userObject, ['_id', 'email']);
+  return _.pick(userObject, ['_id', 'mobile_number']);
 };
 
  
-UserSchema.methods.generateAuthToken = function () {
+subscriberSchema.methods.generateAuthToken = function () {
   var user = this;
   var access = 'auth';
   var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
@@ -121,7 +156,7 @@ UserSchema.methods.generateAuthToken = function () {
 };
 
 
-UserSchema.methods.removeToken = function (token) {
+subscriberSchema.methods.removeToken = function (token) {
   var user = this;
   return user.update({
     $pull: {
@@ -131,7 +166,7 @@ UserSchema.methods.removeToken = function (token) {
 };
 
 
-UserSchema.statics.findByToken = function (token) {
+subscriberSchema.statics.findByToken = function (token) {
   var User = this;
   var decoded;
   try {
@@ -147,7 +182,7 @@ UserSchema.statics.findByToken = function (token) {
 };
 
 
-UserSchema.statics.findByCredentials = function (email, password) {
+subscriberSchema.statics.findByCredentials = function (email, password) {
   var User = this;
 
   return User.findOne({email}).then((user) => {
@@ -173,7 +208,7 @@ UserSchema.statics.findByCredentials = function (email, password) {
  * Encrypt the user password using bcrypt.js nodejs library
  * 
  */
-UserSchema.pre('save', function (next) {
+subscriberSchema.pre('save', function (next) {
   var user = this;
 
   if (user.isModified('password')) {
@@ -188,6 +223,6 @@ UserSchema.pre('save', function (next) {
   }
 });
 
-var User = mongoose.model('User', UserSchema);
+var Subscriber = mongoose.model('Subscriber', subscriberSchema);
 
-module.exports = {User}
+module.exports = {Subscriber}

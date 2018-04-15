@@ -8,6 +8,7 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 var {Configuration} = require('./models/configuration-model');
 var {User} = require('./models/user-model');
+var {Subscriber} = require('./models/subscriber-model');
 
 var {Call_logs}=require('../Models/call-logs/models/call-logs_model');
 var app = express();
@@ -38,6 +39,24 @@ var authenticate = (req, res, next) => {
   });
 };
 
+
+
+
+var SubAuthenticate = (req, res, next) => {
+  var token = req.header('subsc-auth');
+
+  Subscriber.findByToken(token).then((user) => {
+    if (!user) {
+      return Promise.reject();
+    }
+
+    req.user = user;
+    req.token = token;
+    next();
+  }).catch((e) => {
+    res.status(401).send();
+  });
+};
 /**
  * 
  * Post Request for Configure the Services
