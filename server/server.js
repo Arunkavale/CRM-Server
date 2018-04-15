@@ -140,6 +140,7 @@ app.post('/calllogs', authenticate, (req, res) => {
     operator_id: req.body.operator_id,
     datetime: new Date(),
     Call_type: req.body.Call_type,
+    timeOfCall: req.body.timeOfCall,
     call_duration: req.body.call_duration,
     recording_file: req.body.recording_file,
     Purpose: req.body.Purpose,

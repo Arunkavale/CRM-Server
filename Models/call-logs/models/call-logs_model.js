@@ -28,7 +28,7 @@ var Call_logs = mongoose.model('Call_logs',{
         type: Date,
         required: true,
         // minlength: 2,
-        trim: true
+      
     },
     Call_type: {
         type: String,
