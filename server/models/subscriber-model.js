@@ -26,7 +26,7 @@ var subscriberSchema = new mongoose.Schema({
   company_name: {
     type: String,
     require: true,
-    minlength: 6,
+    minlength: 2,
     unique:true,
     required: [true, 'UserName is required']
   },
@@ -77,9 +77,9 @@ var subscriberSchema = new mongoose.Schema({
     // minlength: 8
   },
   mobile_number: {
-    type: String,
-    require: true
-    // minlength: 8
+    type: Number,
+    require: true,
+    minlength: 10
   },
   Industry: {
     type: String,
@@ -139,26 +139,26 @@ var subscriberSchema = new mongoose.Schema({
 
 
 subscriberSchema.methods.toJSON = function () {
-  var user = this;
-  var userObject = user.toObject();
-  return _.pick(userObject, ['_id', 'mobile_number']);
+  var subscriber = this;
+  var userObject = subscriber.toObject();
+  return _.pick(userObject, ['_id','mobile_number']);
 };
 
  
 subscriberSchema.methods.generateAuthToken = function () {
-  var user = this;
+  var subscriber = this;
   var access = 'auth';
-  var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
-  user.tokens.push({access, token});
-  return user.save().then(() => {
+  var token = jwt.sign({_id: subscriber._id.toHexString(), access}, process.env.JWT_SECRET).toString();
+  subscriber.tokens.push({access, token});
+  return subscriber.save().then(() => {
     return token;
   });
 };
 
 
 subscriberSchema.methods.removeToken = function (token) {
-  var user = this;
-  return user.update({
+  var subscriber = this;
+  return subscriber.update({
     $pull: {
       tokens: {token}
     }
@@ -167,14 +167,14 @@ subscriberSchema.methods.removeToken = function (token) {
 
 
 subscriberSchema.statics.findByToken = function (token) {
-  var User = this;
+  var Subscriber = this;
   var decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (e) {
     return Promise.reject();
   }
-  return User.findOne({
+  return Subscriber.findOne({
     '_id': decoded._id,
     'tokens.token': token,
     'tokens.access': 'auth'
@@ -182,19 +182,19 @@ subscriberSchema.statics.findByToken = function (token) {
 };
 
 
-subscriberSchema.statics.findByCredentials = function (email, password) {
-  var User = this;
+subscriberSchema.statics.findByCredentials = function (mobile_number, password) {
+  var Subscriber = this;
 
-  return User.findOne({email}).then((user) => {
-    if (!user) {
+  return Subscriber.findOne({mobile_number}).then((subscriber) => {
+    if (!subscriber) {
       return Promise.reject();
     }
 
     return new Promise((resolve, reject) => {
      // Compare the password
-      bcrypt.compare(password, user.password, (err, res) => {
+      bcrypt.compare(password, subscriber.password, (err, res) => {
         if (res) {
-          resolve(user);
+          resolve(subscriber);
         } else {
           reject();
         }
@@ -209,12 +209,12 @@ subscriberSchema.statics.findByCredentials = function (email, password) {
  * 
  */
 subscriberSchema.pre('save', function (next) {
-  var user = this;
+  var subscriber = this;
 
-  if (user.isModified('password')) {
+  if (subscriber.isModified('password')) {
     bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(user.password, salt, (err, hash) => {
-        user.password = hash;
+      bcrypt.hash(subscriber.password, salt, (err, hash) => {
+        subscriber.password = hash;
         next();
       });
     });

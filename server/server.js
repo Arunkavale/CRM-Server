@@ -8,6 +8,8 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 var {Configuration} = require('./models/configuration-model');
 var {User} = require('./models/user-model');
+var {Services} = require('./models/services-model');
+
 var {Subscriber} = require('./models/subscriber-model');
 
 var {Call_logs}=require('../Models/call-logs/models/call-logs_model');
@@ -45,12 +47,12 @@ var authenticate = (req, res, next) => {
 var SubAuthenticate = (req, res, next) => {
   var token = req.header('subsc-auth');
 
-  Subscriber.findByToken(token).then((user) => {
-    if (!user) {
+  Subscriber.findByToken(token).then((subscriber) => {
+    if (!subscriber) {
       return Promise.reject();
     }
 
-    req.user = user;
+    req.subscriber = subscriber;
     req.token = token;
     next();
   }).catch((e) => {
@@ -82,6 +84,43 @@ app.post('/configurations', authenticate, (req, res) => {
     res.status(400).send(e);
   });
 });
+
+
+
+
+app.post('/Create_services', authenticate, (req, res) => {
+
+  console.log(req.body);
+  
+  var services = new Services({
+    category_name: req.body.category_name,
+    services: [{
+      service_name:req.body.service_name,
+      price:req.body.price   
+    }],
+    _creator: req.user._id
+  });
+  console.log("******// Configuration //******");
+  // console.log(configuration);
+  services.save().then((doc) => {
+    res.send(doc);
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+
+app.get('/get_Service', authenticate, (req, res) => {
+  Services.find({
+    _creator: req.user._id
+  }).then((services) => {
+    res.send({services});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+
 
 
 /**
@@ -248,8 +287,32 @@ app.post('/users', (req, res) => {
 });
 
 
+
+
+app.post('/subscriber', (req, res) => {
+  var body = req.body;
+  var subscriber = new Subscriber(body);
+   
+  subscriber.save().then(() => {
+    return subscriber.generateAuthToken();
+  }).then((token) => {
+    // console.log(user)
+    let sucess={
+      'status':"sucess"
+    }
+    res.header('subsc-auth', token).send(sucess);
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
+});
+
 app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
+});
+
+
+app.get('/subscriber/me', SubAuthenticate, (req, res) => {
+  res.send(req.subscriber);
 });
 
 /**
@@ -269,6 +332,21 @@ app.post('/users/login', (req, res) => {
   });
 });
 
+
+
+
+
+app.post('/subscriber/login', (req, res) => {
+  var body = _.pick(req.body, ['mobile_number', 'password']);
+
+  Subscriber.findByCredentials(body.mobile_number, body.password).then((subscriber) => {
+    return subscriber.generateAuthToken().then((token) => {
+      res.header('user-auth', token).send(subscriber);
+    });
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
 /**
  * 
  * Logout the user
