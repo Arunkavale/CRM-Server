@@ -9,6 +9,7 @@ var {mongoose} = require('./db/mongoose');
 var {Configuration} = require('./models/configuration-model');
 var {User} = require('./models/user-model');
 
+var {Call_logs}=require('../Models/call-logs/models/call-logs_model');
 var app = express();
 const port = process.env.PORT;
 
@@ -63,6 +64,58 @@ app.post('/configurations', authenticate, (req, res) => {
   });
 });
 
+
+/**
+ * 
+ * Calllogs
+ * 
+ */
+
+
+app.post('/calllogs', authenticate, (req, res) => {
+
+  console.log(req.body);
+  
+  var calllogs = new Call_logs({
+    customer_number: req.body.customer_number,
+    customer_name: req.body.customer_name,
+    operator_id: req.body.operator_id,
+    datetime: new Date(),
+    Call_type: req.body.Call_type,
+    call_duration: req.body.call_duration,
+    recording_file: req.body.recording_file,
+    Purpose: req.body.Purpose,
+    _creator: req.user._id
+  });
+  console.log("******// Call logs //******");
+  console.log(calllogs);
+  calllogs.save().then((doc) => {
+    res.send(doc);
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+
+
+/**
+ * 
+ * check the all configured services by user
+ */
+app.get('/calllogs', authenticate, (req, res) => {
+  Call_logs.find({
+    _creator: req.user._id
+  }).then((calllogs) => {
+    res.send({calllogs});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+
+
+
+
 /**
  * 
  * check the all configured services by user
@@ -88,7 +141,6 @@ app.get('/configurations/:id', authenticate, (req, res) => {
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
-
   Configuration.findOne({
     _id: id,
     _creator: req.user._id
@@ -136,7 +188,7 @@ app.delete('/configurations/:id', authenticate, (req, res) => {
  */
 app.patch('/configurations/:id', authenticate, (req, res) => {
   var id = req.params.id;
-  var body = _.pick(req.body, ['text', 'completed']);
+  var body =req.body;
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();

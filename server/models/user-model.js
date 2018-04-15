@@ -35,6 +35,16 @@ var UserSchema = new mongoose.Schema({
     require: true,
     minlength: 8
   },
+  dob: {
+    type: Date,
+    require: true
+    // minlength: 8
+  },
+  address: {
+    type: String,
+    require: true
+    // minlength: 8
+  },
   email: {
     type: String,
     required: true,
@@ -46,18 +56,24 @@ var UserSchema = new mongoose.Schema({
       message: '{VALUE} is not a valid Email address'
     }
   },
-  industrie: {
+  customer_id:{
     type: String,
-    required: true,
-    trim: true,
-    minlength: 2,
+    require: true,
+    minlength: 1
+    
   },
-  OrganisationName: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 2,
-  },
+  // industrie: {
+  //   type: String,
+  //   required: true,
+  //   trim: true,
+  //   minlength: 2,
+  // },
+  // OrganisationName: {
+  //   type: String,
+  //   required: true,
+  //   trim: true,
+  //   minlength: 2,
+  // },
   phone: {
     type: Number,
     minlength: 10,
@@ -67,7 +83,8 @@ var UserSchema = new mongoose.Schema({
       },
       message: '{VALUE} is not a valid phone number!'
     },
-    required: [true, 'User phone number required']
+    required: [true, 'User phone number required'],
+    unique: true
   },
   created: {
     type: Date,
