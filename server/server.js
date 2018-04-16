@@ -11,6 +11,9 @@ var {User} = require('./models/user-model');
 var {Services} = require('./models/services-model');
 
 var {Subscriber} = require('./models/subscriber-model');
+var {Walkins} = require('./models/walkins-model');
+var {Appointment} = require('./models/appiontment-model');
+
 
 var {Call_logs}=require('../Models/call-logs/models/call-logs_model');
 var app = express();
@@ -85,6 +88,72 @@ app.post('/configurations', authenticate, (req, res) => {
   });
 });
 
+
+
+app.post('/walkins', authenticate, (req, res) => {
+
+  console.log(req.body);
+  
+  var walkins = new Walkins({
+    customerPhoneNumber: req.body.customerPhoneNumber,
+    customerName: req.body.customerName,
+    address: req.body.address,
+    notes: req.body.notes,
+    timestamp: req.body.timestamp,
+    order: [{
+      orderList:{
+        serviceId1:req.body.serviceId1,
+        serviceId3:req.body.serviceId3
+      },
+    grandTotal: req.body.grandTotal,
+      
+    }],
+    customerId: req.user._id
+  });
+  console.log("******// Configuration //******");
+  console.log(walkins);
+  walkins.save().then((doc) => {
+    res.send(doc);
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+
+app.post('/appointment', authenticate, (req, res) => {
+
+  console.log(req.body);
+  
+  var appiontment = new Appointment({
+    name: req.body.name,
+    phonenumber: req.body.phonenumber,
+    email: req.body.email,
+    dob: req.body.dob,
+    address: req.body.address,
+    notes: req.body.notes,
+    Interactiontype: req.body.Interactiontype,
+    customerId: req.user._id
+  });
+  console.log("******// Configuration //******");
+  // console.log(walkins);
+  appiontment.save().then((doc) => {
+    var saved=[{ "status": "success" }]
+    res.send(saved);
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+
+app.get('/get_Appointment', authenticate, (req, res) => {
+  Appointment.find({
+    customerId: req.user._id
+  }).then((appointment) => {
+    res.send({appointment});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
 
 
 
