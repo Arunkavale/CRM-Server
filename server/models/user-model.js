@@ -62,12 +62,14 @@ var UserSchema = new mongoose.Schema({
     minlength: 1
     
   },
-  // industrie: {
-  //   type: String,
-  //   required: true,
-  //   trim: true,
-  //   minlength: 2,
-  // },
+  operatorId: {
+    type: Number,
+    required: true
+  },
+  subscriberId: {
+    type: Number,
+    required: true
+  },
   // OrganisationName: {
   //   type: String,
   //   required: true,
