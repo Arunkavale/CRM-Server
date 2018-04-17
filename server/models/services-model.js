@@ -13,8 +13,8 @@ var Services = mongoose.model('services', {
     trim: true
   },
   services: [{
-    serviceName:String,
-		price:Number
+    type:object,
+    required:true
   }],
   
   _creator: {
