@@ -56,12 +56,12 @@ var UserSchema = new mongoose.Schema({
       message: '{VALUE} is not a valid Email address'
     }
   },
-  customerId:{
-    type: String,
-    require: true,
-    minlength: 1
+  // customerId:{
+  //   type: String,
+  //   require: true,
+  //   minlength: 1
     
-  },
+  // },
   operatorId: {
     type: Number,
     required: true
@@ -108,7 +108,7 @@ var UserSchema = new mongoose.Schema({
 UserSchema.methods.toJSON = function () {
   var user = this;
   var userObject = user.toObject();
-  return _.pick(userObject, ['_id', 'email']);
+  return _.pick(userObject, ['_id', 'email','firstName','lastName','phone','operatorId','subscriberId']);
 };
 
  
