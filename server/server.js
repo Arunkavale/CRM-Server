@@ -127,12 +127,12 @@ app.post('/appointment', authenticate, (req, res) => {
   
   var appiontment = new Appointment({
     name: req.body.name,
-    phonenumber: req.body.phonenumber,
+    phoneNumber: req.body.phoneNumber,
     email: req.body.email,
     dob: req.body.dob,
     address: req.body.address,
     notes: req.body.notes,
-    Interactiontype: req.body.Interactiontype,
+    interactionType: req.body.interactionType,
     customerId: req.user._id
   });
   console.log("******// Configuration //******");
