@@ -13,7 +13,7 @@ var Services = mongoose.model('services', {
     trim: true
   },
   services: {
-    type:Object,
+    type:Array,
     required:true
   },
   
