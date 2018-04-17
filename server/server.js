@@ -99,7 +99,7 @@ app.post('/walkins', authenticate, (req, res) => {
     customerName: req.body.customerName,
     address: req.body.address,
     notes: req.body.notes,
-    timestamp: req.body.timestamp,
+    timeStamp: req.body.timeStamp,
     order: [{
       orderList:{
         serviceId1:req.body.serviceId1,
