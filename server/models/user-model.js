@@ -23,13 +23,13 @@ var UserSchema = new mongoose.Schema({
     minlength: 1,
     required: [true, 'lastname is required']
   },
-  userName: {
-    type: String,
-    require: true,
-    minlength: 6,
-    unique:true,
-    required: [true, 'UserName is required']
-  },
+  // userName: {
+  //   type: String,
+  //   require: true,
+  //   minlength: 6,
+  //   unique:true,
+  //   required: [true, 'UserName is required']
+  // },
   password: {
     type: String,
     require: true,
