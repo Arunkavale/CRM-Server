@@ -12,10 +12,10 @@ var Services = mongoose.model('services', {
     minlength: 1,
     trim: true
   },
-  services: [{
-    type:object,
+  services: {
+    type:Object,
     required:true
-  }],
+  },
   
   _creator: {
     type: mongoose.Schema.Types.ObjectId,
