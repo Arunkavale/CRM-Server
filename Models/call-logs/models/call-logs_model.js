@@ -18,12 +18,12 @@ var Call_logs = mongoose.model('Call_logs',{
         minlength: 2,
         trim: true
     },
-    // datetime: {
-    //     type: Date,
-    //     required: true,
-    //     // minlength: 2,
-    //     trim: true
-    // },
+    datetime: {
+        type: Date,
+        required: true,
+        // minlength: 2,
+        trim: true
+    },
     timeOfCall: {
         type: Date,
         required: true,

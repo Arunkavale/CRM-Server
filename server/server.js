@@ -216,15 +216,15 @@ app.post('/calllogs', authenticate, (req, res) => {
   console.log(req.body);
   
   var calllogs = new Call_logs({
-    customer_number: req.body.customer_number,
-    customer_name: req.body.customer_name,
-    operator_id: req.body.operator_id,
+    customerNumber: req.body.customerNumber,
+    customerName: req.body.customerName,
+    operatorId: req.body.operatorId,
     datetime: new Date(),
-    Call_type: req.body.Call_type,
+    callType: req.body.callType,
     timeOfCall: req.body.timeOfCall,
-    call_duration: req.body.call_duration,
-    recording_file: req.body.recording_file,
-    Purpose: req.body.Purpose,
+    callDuration: req.body.callDuration,
+    recordingFile: req.body.recordingFile,
+    purpose: req.body.purpose,
     _creator: req.user._id
   });
   console.log("******// Call logs //******");
