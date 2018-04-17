@@ -12,12 +12,10 @@ var Services = mongoose.model('services', {
     minlength: 1,
     trim: true
   },
-  services: {
-    type: Array,
-    required: true,
-    minlength: 1,
-    trim: true
-  },
+  services: [{
+    serviceName:String,
+		price:Number
+  }],
   
   _creator: {
     type: mongoose.Schema.Types.ObjectId,
