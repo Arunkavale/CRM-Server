@@ -13,9 +13,9 @@ var Call_logs = mongoose.model('Call_logs',{
         trim: true
     },
     operatorId: {
-        type: String,
+        type: Number,
         required: true,
-        minlength: 2,
+        minlength: 1,
         trim: true
     },
     datetime: {
