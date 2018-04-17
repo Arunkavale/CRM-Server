@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
  * 
  */ 
 var Services = mongoose.model('services', {
-    category_name: {
+    categoryName: {
     type: String,
     required: true,
     minlength: 1,

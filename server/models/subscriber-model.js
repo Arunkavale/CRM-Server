@@ -11,19 +11,19 @@ const bcrypt = require('bcryptjs');
  * 
  */
 var subscriberSchema = new mongoose.Schema({
-  firstname: {
+  firstName: {
     type: String,
     require: true,
     minlength: 1,
     required: [true, 'firstname is required']
   },
-  lastname: {
+  lastName: {
     type: String,
     require: true,
     minlength: 1,
     required: [true, 'lastname is required']
   },
-  company_name: {
+  companyName: {
     type: String,
     require: true,
     minlength: 2,
@@ -76,12 +76,12 @@ var subscriberSchema = new mongoose.Schema({
     require: true
     // minlength: 8
   },
-  mobile_number: {
+  mobileNumber: {
     type: Number,
     require: true,
     minlength: 10
   },
-  Industry: {
+  industry: {
     type: String,
     require: true
     // minlength: 8
@@ -92,7 +92,7 @@ var subscriberSchema = new mongoose.Schema({
     // minlength: 8
   },
  
-  susbscription_until:{
+  susbscriptionUntil:{
     type: String,
     require: true,
     minlength: 1

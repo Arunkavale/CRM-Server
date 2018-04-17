@@ -1,18 +1,18 @@
 var mongoose = require('mongoose');
 
 var Call_logs = mongoose.model('Call_logs',{
-    customer_number:{
+    customerNumber:{
         type:Number,
         require:true,
         minlength:10
     },
-    customer_name: {
+    customerName: {
         type: String,
         required: true,
         minlength: 2,
         trim: true
     },
-    operator_id: {
+    operatorId: {
         type: String,
         required: true,
         minlength: 2,
@@ -30,25 +30,25 @@ var Call_logs = mongoose.model('Call_logs',{
         // minlength: 2,
       
     },
-    Call_type: {
+    callType: {
         type: String,
         required: true,
         minlength: 2,
         trim: true
     },
-    call_duration: {
+    callDuration: {
         type: String,
         required: true,
         minlength: 2,
         trim: true
     },
-    recording_file: {
+    recordingFile: {
         type: String,
         required: true,
         minlength: 2,
         trim: true
     },
-    Purpose: {
+    purpose: {
         type: String,
         required: true,
         minlength: 2,

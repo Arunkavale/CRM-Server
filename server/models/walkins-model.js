@@ -24,7 +24,7 @@ var Walkins = mongoose.model('Walkins',{
         // minlength: 2,
         trim: true
     },
-    timestamp: {
+    timeStamp: {
         type: Date,
         required: true,
         // minlength: 2,

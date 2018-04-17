@@ -110,6 +110,7 @@ app.post('/walkins', authenticate, (req, res) => {
     }],
     customerId: req.user._id
   });
+  console.log(walkins.order.orderList);
   console.log("******// Configuration //******");
   console.log(walkins);
   walkins.save().then((doc) => {
@@ -150,6 +151,17 @@ app.get('/get_Appointment', authenticate, (req, res) => {
     customerId: req.user._id
   }).then((appointment) => {
     res.send({appointment});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+
+app.get('/getWalkins', authenticate, (req, res) => {
+  Walkins.find({
+    customerId: req.user._id
+  }).then((walkins) => {
+    res.send({walkins});
   }, (e) => {
     res.status(400).send(e);
   });

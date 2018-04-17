@@ -11,19 +11,19 @@ const bcrypt = require('bcryptjs');
  * 
  */
 var UserSchema = new mongoose.Schema({
-  firstname: {
+  firstName: {
     type: String,
     require: true,
     minlength: 1,
     required: [true, 'firstname is required']
   },
-  lastname: {
+  lastName: {
     type: String,
     require: true,
     minlength: 1,
     required: [true, 'lastname is required']
   },
-  username: {
+  userName: {
     type: String,
     require: true,
     minlength: 6,
@@ -56,7 +56,7 @@ var UserSchema = new mongoose.Schema({
       message: '{VALUE} is not a valid Email address'
     }
   },
-  customer_id:{
+  customerId:{
     type: String,
     require: true,
     minlength: 1

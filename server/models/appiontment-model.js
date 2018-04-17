@@ -39,7 +39,7 @@ var Appointment = mongoose.model('Appointment',{
         // minlength: 2,
       
     },
-    Interactiontype: {
+    interactionType: {
         type: String,
         required: true,
         minlength: 2,
