@@ -174,9 +174,9 @@ app.post('/Create_services', authenticate, (req, res) => {
   console.log(req.body);
   
   var services = new Services({
-    category_name: req.body.category_name,
+    categoryName: req.body.category_name,
     services: [{
-      service_name:req.body.service_name,
+      serviceName:req.body.service_name,
       price:req.body.price   
     }],
     _creator: req.user._id
