@@ -133,6 +133,7 @@ app.post('/appointment', authenticate, (req, res) => {
     dob: req.body.dob,
     address: req.body.address,
     notes: req.body.notes,
+    appointmentTime:req.body.appointmentTime,
     interactionType: req.body.interactionType,
     customerId: req.user._id
   });
@@ -491,7 +492,7 @@ app.post('/users/login', (req, res) => {
       res.header('user-auth', token).send(user);
     });
   }).catch((e) => {
-    res.status(400).send();
+    res.status(401).send();
   });
 });
 

@@ -37,7 +37,6 @@ var Appointment = mongoose.model('Appointment',{
         type: String,
         required: true,
         // minlength: 2,
-      
     },
     interactionType: {
         type: String,
@@ -48,7 +47,11 @@ var Appointment = mongoose.model('Appointment',{
     customerId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
-      }
+      },
+      appointmentTime: {
+        type:Date,
+        required:true
+    }
 });
 
 module.exports={Appointment};
