@@ -70,10 +70,7 @@ var UserSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  enquiryTime: {
-    type:Date,
-    required:true
-  },
+  
   // OrganisationName: {
   //   type: String,
   //   required: true,
