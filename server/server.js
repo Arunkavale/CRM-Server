@@ -13,6 +13,9 @@ var {Services} = require('./models/services-model');
 var {Subscriber} = require('./models/subscriber-model');
 var {Walkins} = require('./models/walkins-model');
 var {Appointment} = require('./models/appiontment-model');
+var {Enquiry} = require('./models/Enquiry-model');
+var {UnattendedCalls} = require('./models/unattended-model');
+
 
 
 var {Call_logs}=require('../Models/call-logs/models/call-logs_model');
@@ -122,9 +125,7 @@ app.post('/walkins', authenticate, (req, res) => {
 
 
 app.post('/appointment', authenticate, (req, res) => {
-
   console.log(req.body);
-  
   var appiontment = new Appointment({
     name: req.body.name,
     phoneNumber: req.body.phoneNumber,
@@ -144,6 +145,86 @@ app.post('/appointment', authenticate, (req, res) => {
     res.status(400).send(e);
   });
 });
+
+
+
+app.post('/enquiry', authenticate, (req, res) => {
+  var enquiry = new Enquiry({
+    name: req.body.name,
+    number: req.body.number,
+    email: req.body.email,
+    dob: req.body.dob,
+    address: req.body.address,
+    notes: req.body.notes,
+    interactionType: req.body.interactionType,
+    enquiryTime: req.body.enquiryTime,
+    customerId: req.user._id
+  });
+  console.log("******// Configuration //******");
+  // console.log(walkins);
+  enquiry.save().then((doc) => {
+    var saved=[{ "status": "success" }]
+    res.send(saved);
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+
+
+
+app.post('/unattendedCalls', authenticate, (req, res) => {
+  var unattendedCalls = new UnattendedCalls({
+    number: req.body.number,
+    missedcalltime: req.body.missedcalltime,
+    createdTime: new Date(),
+    customerId: req.user._id
+  });
+  console.log("******// Configuration //******");
+  // console.log(walkins);
+  unattendedCalls.save().then((doc) => {
+    var saved=[{ "status": "success" }]
+    res.send(saved);
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+
+app.get('/unattendedCalls', authenticate, (req, res) => {
+  UnattendedCalls.find({
+    customerId: req.user._id
+  }).then((unattendedCalls) => {
+    res.send({unattendedCalls});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+
+app.delete('/unattendedCalls/:id', authenticate, (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  UnattendedCalls.findOneAndRemove({
+    _id: id,
+    customerId: req.user._id
+  }).then((unattendedCalls) => {
+    if (!unattendedCalls) {
+      return res.status(404).send();
+    }
+    var deleted=[{ "status": "success" }]
+
+    res.send({deleted});
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
+
+
 
 
 app.get('/get_Appointment', authenticate, (req, res) => {

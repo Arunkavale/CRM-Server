@@ -34,6 +34,7 @@ var Call_logs = mongoose.model('Call_logs',{
         type: String,
         required: true,
         minlength: 2,
+        enum :['Incoming','Missed','Outgoing'],
         trim: true
     },
     callDuration: {
@@ -52,6 +53,7 @@ var Call_logs = mongoose.model('Call_logs',{
         type: String,
         required: true,
         minlength: 2,
+        enum: ['Enquiry','Appointment','CancelAppointment','Others'],
         trim: true
     },
     _creator: {
