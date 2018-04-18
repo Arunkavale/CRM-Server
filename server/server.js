@@ -507,7 +507,7 @@ app.post('/subscriber/login', (req, res) => {
       res.header('user-auth', token).send(subscriber);
     });
   }).catch((e) => {
-    res.status(400).send();
+    res.status(404).send();
   });
 });
 /**
