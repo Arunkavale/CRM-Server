@@ -492,7 +492,7 @@ app.post('/users/login', (req, res) => {
       res.header('user-auth', token).send(user);
     });
   }).catch((e) => {
-    res.status(401).send();
+    res.status(400).send({ message: 'User is invalid'});
   });
 });
 
