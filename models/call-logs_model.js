@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 
-var Call_logs = mongoose.model('Call_logs',{
+
+var callLogsSchema = new mongoose.Schema({
+
     customerNumber:{
         type:Number,
         require:true,
@@ -38,7 +40,7 @@ var Call_logs = mongoose.model('Call_logs',{
         trim: true
     },
     callDuration: {
-        type: String,
+        type: Number,
         required: true,
         minlength: 2,
         trim: true
@@ -62,4 +64,8 @@ var Call_logs = mongoose.model('Call_logs',{
       }
 });
 
-module.exports={Call_logs};
+// var Call_logs = mongoose.model('Call_logs',{
+    
+// });
+mongoose.model('Call_logs', callLogsSchema);
+// module.exports={Call_logs};

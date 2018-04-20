@@ -141,7 +141,7 @@ var subscriberSchema = new mongoose.Schema({
 subscriberSchema.methods.toJSON = function () {
   var subscriber = this;
   var userObject = subscriber.toObject();
-  return _.pick(userObject, ['_id','mobile_number']);
+  return _.pick(userObject, ['_id','mobileNumber']);
 };
 
  
@@ -182,10 +182,10 @@ subscriberSchema.statics.findByToken = function (token) {
 };
 
 
-subscriberSchema.statics.findByCredentials = function (mobile_number, password) {
+subscriberSchema.statics.findByCredentials = function (mobileNumber, password) {
   var Subscriber = this;
 
-  return Subscriber.findOne({mobile_number}).then((subscriber) => {
+  return Subscriber.findOne({mobileNumber}).then((subscriber) => {
     if (!subscriber) {
       return Promise.reject();
     }
