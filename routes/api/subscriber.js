@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 const _ = require('lodash');
 
-var {SubAuthenticate} = require('../SubAuthenticate');
+var {SubAuthenticate} = require('../subAuthenticate');
 var Subscriber=mongoose.model('Subscriber');
 
 

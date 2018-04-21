@@ -15,6 +15,7 @@ var {Walkins} = require('./models/walkins-model');
 var {Appointment} = require('./models/appiontment-model');
 var {Enquiry} = require('./models/Enquiry-model');
 var {UnattendedCalls} = require('./models/unattended-model');
+var {Customer} = require('./models/customer-model');
 
 var {authenticate} = require('./routes/authenticate');
 

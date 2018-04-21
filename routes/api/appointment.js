@@ -4,6 +4,8 @@ var User = mongoose.model('User');
 var Appointment = mongoose.model('Appointment');
 
 var {authenticate} = require('../authenticate');
+var Customer=mongoose.model('Customer');
+
 // var Call_logs=mongoose.model('Call_logs');
 
 
@@ -34,8 +36,32 @@ router.get('/getAppointment', authenticate, (req, res) => {
       customerId: req.user._id
     });
     appiontment.save().then((doc) => {
-      var saved=[{ "status": "success" }]
-      res.send(saved);
+
+
+
+      var customer = new Customer({
+        customerNumber: req.body.phoneNumber,
+        customerName: req.body.name,
+        email: req.body.email,
+        dob: req.body.dob,
+        address: req.body.address,
+        _creator: req.user._id
+      });
+      console.log(customer);
+      customer.save().then((customer) => {
+          console.log("Customer Saved");
+        // res.send(saved); 
+        // res.send(doc);
+        var saved=[{ "status": "success" }]
+        res.send(saved);
+        
+      }, (e) => {
+        res.status(400).send(e);
+      });
+
+
+
+     
     }, (e) => {
       res.status(400).send(e);
     });

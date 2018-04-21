@@ -2,6 +2,7 @@ var router = require('express').Router();
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Walkins = mongoose.model('Walkins');
+var Customer=mongoose.model('Customer');
 
 var {authenticate} = require('../authenticate');
 // var Call_logs=mongoose.model('Call_logs');
@@ -31,7 +32,26 @@ router.post('/walkins', authenticate, (req, res) => {
     });
    
     walkins.save().then((doc) => {
-      res.send(doc);
+
+
+      var customer = new Customer({
+        customerNumber: req.body.customerPhoneNumber,
+        customerName: req.body.customerName,
+        email: req.body.email,
+        dob: req.body.dob,
+        address: req.body.address,
+        _creator: req.user._id
+      });
+      console.log(customer);
+      customer.save().then((customer) => {
+          console.log("Customer Saved");
+        // res.send(saved); 
+        res.send(doc);
+        
+      }, (e) => {
+        res.status(400).send(e);
+      });
+      // res.send(doc);
     }, (e) => {
       res.status(400).send(e);
     });

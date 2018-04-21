@@ -10,6 +10,7 @@ router.use('', require('./enquiry'));
 router.use('', require('./subscriber'));
 router.use('', require('./unattended'));
 router.use('', require('./appointment'));
+router.use('', require('./customer'));
 
 
 // router.use('/articles', require('./articles'));
