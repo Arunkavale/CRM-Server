@@ -1,8 +1,10 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
+
 const validator = require('validator');
 
 
-var Appointment = mongoose.model('Appointment',{
+var Appointment = new Schema({
     name:{
         type:String,
         require:true,
@@ -52,6 +54,7 @@ var Appointment = mongoose.model('Appointment',{
         type:Date,
         required:true
     }
-});
+},{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 
-module.exports={Appointment};
+mongoose.model('Appointment',Appointment);
+// module.exports={Appointment};

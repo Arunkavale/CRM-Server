@@ -62,7 +62,7 @@ var callLogsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
       }
-});
+},{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 
 // var Call_logs = mongoose.model('Call_logs',{
     

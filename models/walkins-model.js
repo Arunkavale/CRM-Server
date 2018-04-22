@@ -1,6 +1,7 @@
-var mongoose = require('mongoose');
-
-var Walkins = mongoose.model('Walkins',{
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
+    
+var Walkins = new Schema({
     customerPhoneNumber:{
         type:Number,
         require:true,
@@ -28,7 +29,11 @@ var Walkins = mongoose.model('Walkins',{
         type: Date,
         required: true,
         // minlength: 2,
-      
+    },
+    createdDate: {
+        type: Date,
+        required: true,
+        // minlength: 2,
     },
     order: {
         type: Object,
@@ -44,6 +49,6 @@ var Walkins = mongoose.model('Walkins',{
         type: mongoose.Schema.Types.ObjectId,
         required: true
       }
-});
-
-module.exports={Walkins};
+},{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
+mongoose.model('Walkins',Walkins);
+// module.exports={Walkins};

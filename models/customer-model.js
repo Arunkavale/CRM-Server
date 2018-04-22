@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+Schema = mongoose.Schema;
 const validator = require('validator');
 
 
@@ -8,12 +9,13 @@ const validator = require('validator');
  * Custmer Model
  * 
  */ 
-var Customer = mongoose.model('Customer', {
+var Customer =  new Schema({
     customerNumber: {
         type: Number,
         required: true,
         minlength: 10,
-        trim: true
+        trim: true,
+        unique:true
     },
     customerName: {
         type:String,
@@ -41,6 +43,7 @@ var Customer = mongoose.model('Customer', {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     }
-});
+},{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 
-module.exports = {Customer};
+mongoose.model('Customer', Customer);
+// module.exports = {Customer};

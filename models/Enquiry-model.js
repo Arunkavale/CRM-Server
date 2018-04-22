@@ -1,4 +1,6 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
+
 const validator = require('validator');
 
 
@@ -7,7 +9,7 @@ const validator = require('validator');
  * Sevices Model
  * 
  */ 
-var Enquiry = mongoose.model('enquiry', {
+var Enquiry = new Schema( {
     name: {
         type: String,
         required: true,
@@ -52,6 +54,7 @@ var Enquiry = mongoose.model('enquiry', {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     }
-});
+},{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 
-module.exports = {Enquiry};
+mongoose.model('enquiry',Enquiry);
+// module.exports = {Enquiry};

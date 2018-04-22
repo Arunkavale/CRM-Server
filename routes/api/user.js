@@ -18,7 +18,7 @@
         console.log("**** User Post *****\n\n");
         console.log(req.body);
         var body = req.body;
-        var user = new User(body);
+        var user = new  (body);
         
         user.save().then(() => {
             return user.generateAuthToken();
@@ -37,7 +37,9 @@
                 res.header('user-auth', token).send(user);
         });
         }).catch((e) => {
-            res.status(200).send({ message: 'User is invalid'});
+            res.status(200).send({  "status": "error",
+            "errorCode":1001,
+            "message": "User is invalid"});
         });
     });
 
