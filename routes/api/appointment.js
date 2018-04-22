@@ -23,12 +23,17 @@ router.get('/getAppointment', authenticate, (req, res) => {
   
 
   
-  router.get('/getLastInteraction', authenticate, (req, res) => {
-    Appointment.findOne({
-      customerId: req.user._id
+  router.get('/getLastInteraction/:id', authenticate, (req, res) => {
+    console.log(req.param.id);
+    var id = req.params.id;
+
+    console.log(id);
+
+    Appointment.findOne({$and :[ {phoneNumber:id },{ customerId: req.user._id }]
     }).sort({createdTime: -1}).then((appointment) => {
+      console.log(appointment);
       console.log("***** lastInteraction Query *****\n\n");
-      Enquiry.findOne({customerId: req.user._id}).sort({createdTime: -1}).exec(function(err, enquiry) {
+      Enquiry.findOne({$and :[ {number:id },{ customerId: req.user._id }]}).sort({createdTime: -1}).exec(function(err, enquiry) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
@@ -36,16 +41,24 @@ router.get('/getAppointment', authenticate, (req, res) => {
         }
         else{
           console.log(" interaction Enquiry \n");
-          if(appointment.createdTime>enquiry.createdTime){
-            console.log("appointement is latest");
-            res.send({appointment});
+          console.log(appointment);
+          console.log(enquiry);
+          if(appointment!=null||appointment!=undefined){
+            if(appointment.createdTime>enquiry.createdTime){
+              console.log("appointement is latest");
+              res.send({appointment});
+            }
+            else{
+              console.log("Enquiry is latest");
+              
+              res.send({enquiry});
+              
+            }
           }
           else{
-            console.log("Enquiry is latest");
-            
-            res.send({enquiry});
-            
+            res.send({"message ":"customer data not found"});
           }
+          
         }
       });
       // res.send({appointment});

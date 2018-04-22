@@ -18,7 +18,7 @@
         console.log("**** User Post *****\n\n");
         console.log(req.body);
         var body = req.body;
-        var user = new  (body);
+        var user = new  User(body);
         
         user.save().then(() => {
             return user.generateAuthToken();

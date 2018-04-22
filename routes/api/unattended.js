@@ -41,11 +41,13 @@ router.post('/unattendedCalls', authenticate, (req, res) => {
   router.delete('/unattendedCalls/:id', authenticate, (req, res) => {
     console.log("****** Unatteded Calls Delete *****\n\n");
     
+    console.log(req.param.id);
     var id = req.params.id;
-  
-    if (!ObjectID.isValid(id)) {
-      return res.status(404).send();
-    }
+
+    console.log(id);
+    // if (!ObjectID.isValid(id)) {
+    //   return res.status(404).send();
+    // }
   
     UnattendedCalls.findOneAndRemove({
       _id: id,
