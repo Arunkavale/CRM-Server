@@ -19,7 +19,8 @@ var Services = mongoose.model('services', {
   
   _creator: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true
+    required: true,
+    unique:true
   }
 });
 
