@@ -13,51 +13,64 @@
     router.post('/calllogs', authenticate, (req, res) => {
         console.log("inside calllogs Post request")
         var dob,email,user=req.user._id;
-        var calllogs = new Call_logs({
-            customerNumber: req.body.customerNumber,
-            customerName: req.body.customerName,
-            operatorId: req.body.operatorId,
-            datetime: new Date(),
-            callType: req.body.callType,
-            timeOfCall: req.body.timeOfCall,
-            callDuration: req.body.callDuration,
-            recordingFile: req.body.recordingFile,
-            purpose: req.body.purpose,
-            _creator: req.user._id
-        });
-        console.log("******// Call logs //******");
-        console.log(calllogs);
-        calllogs.save().then((doc) => {
-            // customer.addCustomer(calllogs.customerNumber,calllogs.customerName,dob,email,user);
+        
+        var data=req.body;
+        console.log(data.length);
+        for(var i=0;i<data.length;i++){
+            console.log(data[i]);
 
-
-            // var customer = new Customer({
-            //     customerNumber: req.body.customerNumber,
-            //     customerName: req.body.customerName,
-            //     email: req.body.email,
-            //     dob: req.body.dob,
-            //     _creator: req.user._id
-            //   });
-            //   console.log(customer);
-            //   customer.save().then((customer) => {
-            //       console.log("Customer Saved");
-            //     // res.send(saved); 
-            //     res.send(doc);
-                
-            //   }, (e) => {
-            //     res.status(400).send(e);
-            //   });
-
-
-            
-
-
-
-
-
-        }, (e) => {
-            res.status(400).send(e);
-        });
+            var calllogs = new Call_logs({
+                customerNumber: req.body[i].customerNumber,
+                customerName: req.body[i].customerName,
+                operatorId: req.body[i].operatorId,
+                datetime: new Date(),
+                callType: req.body[i].callType,
+                timeOfCall: req.body[i].timeOfCall,
+                callDuration: req.body[i].callDuration,
+                recordingFile: req.body[i].recordingFile,
+                purpose: req.body[i].purpose,
+                _creator: req.user._id
+            });
+            console.log("******// Call logs //******");
+            // console.log(calllogs);
+            calllogs.save().then((doc) => {
+                console.log(doc);
+                console.log("**** call logs **** \n\n");
+                console.log(doc);
+                Customer.find({customerNumber : doc.customerNumber}).exec(function (err, customer) {
+                    if (err) {
+                    return res.status(400).send({
+                        message: errorHandler.getErrorMessage(err)
+                    });
+                    } else {
+                    console.log(customer);
+                    if(customer[0]==undefined||customer[0]==null||customer[0]==''){
+                        console.log("customer not present");
+                        var customer = new Customer({
+                        customerNumber: doc.customerNumber,
+                        customerName: doc.customerName,
+                        _creator: req.user._id
+                        });
+                        console.log(customer);
+                        customer.save().then((customer) => {
+                            console.log("Customer Saved");
+                        // res.send(saved); 
+                        res.send(doc);
+                        
+                        }, (e) => {
+                        res.status(400).send(e);
+                        });
+                    }
+                    else{
+                        console.log("customer present");
+                        res.send(doc);
+                    }
+                    }
+                 });
+            }, (e) => {
+                res.status(400).send(e);
+            });
+        }
     });
   
 

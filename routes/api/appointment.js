@@ -6,6 +6,7 @@ var Appointment = mongoose.model('Appointment');
 var {authenticate} = require('../authenticate');
 var Customer=mongoose.model('Customer');
 var Enquiry=mongoose.model('enquiry');
+var Walkins = mongoose.model('Walkins');
 
 
 // var Call_logs=mongoose.model('Call_logs');
@@ -33,32 +34,59 @@ router.get('/getAppointment', authenticate, (req, res) => {
     }).sort({createdTime: -1}).then((appointment) => {
       console.log(appointment);
       console.log("***** lastInteraction Query *****\n\n");
-      Enquiry.findOne({$and :[ {number:id },{ customerId: req.user._id }]}).sort({createdTime: -1}).exec(function(err, enquiry) {
+      Enquiry.findOne({$and :[ {number:id },{ customerId: req.user._id }]
+      }).sort({createdTime: -1}).exec(function(err, enquiry) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
           });
         }
+      // });
         else{
+          Walkins.findOne({$and :[ {customerPhoneNumber:id },{ customerId: req.user._id }]
+          }).sort({createdTime: -1}).exec(function(err, walkins) {
+            if (err) {
+              return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+              });
+            }else{
+              if(appointment!=null||appointment!=undefined){
+                if(appointment.createdTime>enquiry.createdTime){
+                  console.log("appointement is latest");
+                  if(appointment.createdTime>walkins.createdTime){
+                    res.send({"type":"appointment","data":appointment});
+
+                  }
+                  else{
+                    res.send({"type":"walkins","data":walkins});
+                  }
+                }
+                else{
+                  if(enquiry.createdTime>walkins.createdTime){
+                    res.send({"type":"enquiry","data":enquiry});
+
+                  }
+                  else{
+                    res.send({"type":"walkins","data":walkins});
+                  }
+
+                  console.log("Enquiry is latest");
+                  // res.send({enquiry});
+                }
+              }else{
+                res.send({'message':"Customer details not available"});
+                
+              }
+            }
+          });
           console.log(" interaction Enquiry \n");
           console.log(appointment);
           console.log(enquiry);
-          if(appointment!=null||appointment!=undefined){
-            if(appointment.createdTime>enquiry.createdTime){
-              console.log("appointement is latest");
-              res.send({appointment});
-            }
-            else{
-              console.log("Enquiry is latest");
-              
-              res.send({enquiry});
-              
-            }
-          }
-          else{
-            res.send({"message ":"customer data not found"});
-          }
+
           
+          // else{
+          //   res.send({"message ":"customer data not found"});
+          // }
         }
       });
       // res.send({appointment});
