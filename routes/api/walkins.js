@@ -117,13 +117,14 @@ router.post('/walkins', authenticate, (req, res) => {
   
   
 
-  router.get('/getStatsInTwoDays', authenticate, (req, res) => {
-
+  router.get('/getStatsInTwoDays/:date1/:date2', authenticate, (req, res) => {
     console.log("***** get Stats in two dates");
-    console.log(req.param);
-    console.log(req.param.endDate);
-    var start = moment().startOf('day'); // set to 12:00 am today
-    var end = moment().endOf('day'); // set to 23:59 pm today
+    var startDate=req.params.date1;
+    var endDate=req.params.date2;
+    console.log(req.params);
+
+    var start = moment.unix(startDate); // set to 12:00 am today
+    var end = moment.unix(endDate); // set to 23:59 pm today
     console.log("****** Get Stats  *****\n\n ");
       
     Walkins.find({

@@ -1,4 +1,8 @@
 var {Services} = require('../models/services-model');
+const mongoose = require('mongoose');
+
+var Subscriber=mongoose.model('Subscriber');
+
 
 var SubAuthenticate = (req, res, next) => {
     var token = req.header('subsc-auth');
