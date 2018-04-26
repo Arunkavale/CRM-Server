@@ -2,6 +2,7 @@
     var mongoose = require('mongoose');
     var User = mongoose.model('User');
     const _ = require('lodash');
+var moment = require('moment');
     
 
     var {authenticate} = require('../authenticate');
@@ -18,6 +19,7 @@
         console.log("**** User Post *****\n\n");
         console.log(req.body);
         var body = req.body;
+        body.dob=moment.unix(body.dob);
         var user = new  User(body);
         
         user.save().then(() => {

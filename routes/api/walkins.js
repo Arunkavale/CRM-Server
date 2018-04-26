@@ -19,7 +19,7 @@ router.post('/walkins', authenticate, (req, res) => {
       customerName: req.body.customerName,
       address: req.body.address,
       notes: req.body.notes,
-      timeStamp: req.body.timeStamp,
+      timeStamp: moment.unix(req.body.timeStamp),
       createdDate:new Date(),
       order:req.body.order, /* [{
         orderList:{
@@ -33,6 +33,13 @@ router.post('/walkins', authenticate, (req, res) => {
     });
    
     walkins.save().then((doc) => {
+      console.log("walkin save");
+      var timeStamp=Date.parse(doc.timeStamp);
+      console.log(timeStamp);
+      doc.timeStamp=timeStamp;
+      
+      console.log(doc.timeStamp);
+      console.log(doc);
       Customer.find({customerNumber : req.body.customerPhoneNumber}).exec(function (err, customer) {
         if (err) {
           return res.status(400).send({
@@ -46,7 +53,7 @@ router.post('/walkins', authenticate, (req, res) => {
               customerNumber: req.body.customerPhoneNumber,
               customerName: req.body.customerName,
               email: req.body.email,
-              dob: req.body.dob,
+              dob: moment.unix(req.body.dob),
               address: req.body.address,
               _creator: req.user._id
             });
@@ -54,6 +61,7 @@ router.post('/walkins', authenticate, (req, res) => {
             customer.save().then((customer) => {
                 console.log("Customer Saved");
               // res.send(saved); 
+              
               res.send(doc);
               
             }, (e) => {
@@ -61,7 +69,9 @@ router.post('/walkins', authenticate, (req, res) => {
             });
           }
           else{
+            doc.timeStamp=timeStamp;
             console.log("customer present");
+            console.log(doc);
             res.send(doc);
 
            

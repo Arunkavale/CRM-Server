@@ -6,6 +6,8 @@ var User = mongoose.model('User');
 
 var {authenticate} = require('../authenticate');
 var Customer=mongoose.model('Customer');
+var moment = require('moment');
+
 
 // exports.addCustomer=function (customerNumber,customerName,dob,email,user){
 //     console.log("***** Add Customer **** \n\n");
@@ -55,7 +57,7 @@ var Customer=mongoose.model('Customer');
       customerName: req.body.customerName,
       address: req.body.address,
       email: req.body.email,
-      dob: req.body.dob,
+      dob: moment.unix(req.body.dob),
       _creator: req.user._id
     });
     customer.save().then((customer) => {

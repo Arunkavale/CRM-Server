@@ -53,7 +53,6 @@ var callLogsSchema = new mongoose.Schema({
     },
     purpose: {
         type: String,
-        required: true,
         minlength: 2,
         enum: ['Enquiry','Appointment','CancelAppointment','Others'],
         trim: true

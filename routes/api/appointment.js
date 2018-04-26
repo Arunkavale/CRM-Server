@@ -7,6 +7,7 @@ var {authenticate} = require('../authenticate');
 var Customer=mongoose.model('Customer');
 var Enquiry=mongoose.model('enquiry');
 var Walkins = mongoose.model('Walkins');
+var moment = require('moment');
 
 
 // var Call_logs=mongoose.model('Call_logs');
@@ -22,6 +23,31 @@ router.get('/getAppointment', authenticate, (req, res) => {
     });
   });
   
+
+
+  router.put('/updateAppointment/:id', authenticate, (req, res) => {
+    console.log(" ***** Update Appointment ******\n\n");
+    var id = req.params.id;
+    console.log(id);
+
+    var body = req.body;
+    console.log(body);
+    body.appointmentTime=moment.unix(body.appointmentTime);
+    body.dob=moment.unix(body.dob);
+  
+  
+    Appointment.findOneAndUpdate({ _id: id}, {$set: body}, {new: true}).then((appiontment) => {
+      console.log(appiontment);
+      if (!appiontment) {
+        return res.status(404).send();
+      }
+  
+      res.send({appiontment});
+    }).catch((e) => {
+      console.log(e);
+      res.status(400).send();
+    })
+  });
 
   
   router.get('/getLastInteraction/:id', authenticate, (req, res) => {
@@ -106,10 +132,10 @@ router.get('/getAppointment', authenticate, (req, res) => {
       name: req.body.name,
       phoneNumber: req.body.phoneNumber,
       email: req.body.email,
-      dob: req.body.dob,
+      dob: moment.unix(req.body.dob),
       address: req.body.address,
       notes: req.body.notes,
-      appointmentTime:req.body.appointmentTime,
+      appointmentTime: moment.unix(req.body.appointmentTime),
       interactionType: req.body.interactionType,
       customerId: req.user._id
     });
@@ -128,7 +154,7 @@ router.get('/getAppointment', authenticate, (req, res) => {
               customerNumber: req.body.phoneNumber,
               customerName: req.body.name,
               email: req.body.email,
-              dob: req.body.dob,
+              dob: moment.unix(req.body.dob),
               address: req.body.address,
               _creator: req.user._id
             });
@@ -154,7 +180,7 @@ router.get('/getAppointment', authenticate, (req, res) => {
               $set: {
                 customerName: req.body.name,
                 email: req.body.email,
-                dob: req.body.dob,
+                dob: moment.unix(req.body.dob),
                 address: req.body.address,
               }
             };

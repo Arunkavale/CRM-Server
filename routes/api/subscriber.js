@@ -5,13 +5,15 @@ const _ = require('lodash');
 
 var {SubAuthenticate} = require('../subAuthenticate');
 var Subscriber=mongoose.model('Subscriber');
+var moment = require('moment');
 
 
 
 router.post('/subscriber', (req, res) => {
     var body = req.body;
+    body.dob=moment.unix(req.body.dob);
+    
     var subscriber = new Subscriber(body);
-     
     subscriber.save().then(() => {
       return subscriber.generateAuthToken();
     }).then((token) => {

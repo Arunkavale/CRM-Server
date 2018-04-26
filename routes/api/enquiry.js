@@ -6,6 +6,7 @@ var {authenticate} = require('../authenticate');
 var Enquiry=mongoose.model('enquiry');
 var Customer=mongoose.model('Customer');
 
+var moment = require('moment');
 
 
 
@@ -14,11 +15,11 @@ router.post('/enquiry', authenticate, (req, res) => {
       name: req.body.name,
       number: req.body.number,
       email: req.body.email,
-      dob: req.body.dob,
+      dob: moment.unix(req.body.dob),
       address: req.body.address,
       notes: req.body.notes,
       interactionType: req.body.interactionType,
-      enquiryTime: req.body.enquiryTime,
+      enquiryTime: moment.unix(req.body.enquiryTime),
       customerId: req.user._id
     });
     console.log("******// Configuration //******");
@@ -39,7 +40,7 @@ router.post('/enquiry', authenticate, (req, res) => {
               customerNumber: req.body.number,
               customerName: req.body.name,
               email: req.body.email,
-              dob: req.body.dob,
+              dob: moment.unix(req.body.dob),
               address: req.body.address,
               _creator: req.user._id
             });
@@ -65,7 +66,7 @@ router.post('/enquiry', authenticate, (req, res) => {
               $set: {
                 customerName: req.body.name,
                 email: req.body.email,
-                dob: req.body.dob,
+                dob: moment.unix(req.body.dob),
                 address: req.body.address,
               }
             };

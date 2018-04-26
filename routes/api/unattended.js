@@ -4,6 +4,7 @@ var User = mongoose.model('User');
 
 var {authenticate} = require('../authenticate');
 var UnattendedCalls=mongoose.model('unattendedCalls');
+var moment = require('moment');
 
 
 
@@ -13,7 +14,7 @@ router.post('/unattendedCalls', authenticate, (req, res) => {
   console.log(req.body);
     var unattendedCalls = new UnattendedCalls({
       number: req.body.number,
-      missedcalltime: req.body.missedcalltime,
+      missedcalltime: moment.unix(req.body.missedcalltime),
       createdTime: new Date(),
       customerId: req.user._id
     });
