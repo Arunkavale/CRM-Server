@@ -7,6 +7,9 @@ var User = mongoose.model('User');
 var {authenticate} = require('../authenticate');
 var Customer=mongoose.model('Customer');
 var moment = require('moment');
+var Appointment = mongoose.model('Appointment');
+var Enquiry=mongoose.model('enquiry');
+var Walkins = mongoose.model('Walkins');
 
 
 // exports.addCustomer=function (customerNumber,customerName,dob,email,user){
@@ -80,6 +83,69 @@ var moment = require('moment');
         return res.status(404).send();
       }
       res.send({customerByName});
+    }).catch((e) => {
+      res.status(400).send();
+    });
+  });
+
+
+  router.get('/getCustomerInteraction/:phoneNumber', authenticate, (req, res) => {
+    console.log("***** Get Customer by name *****\n\n");
+    var phoneNumber = req.params.phoneNumber;
+    // console.log(customerName);
+    Appointment.find({
+      phoneNumber: phoneNumber,
+      customerId: req.user._id
+    }).then((appointment) => {
+      console.log("\t\t\t\t*****   Appointments *******\n\n\n");
+      console.log(appointment);
+      if (!appointment) {
+        return res.status(404).send();
+      }
+      Walkins.find({
+        customerPhoneNumber: phoneNumber,
+        customerId: req.user._id
+      }).then((walkins) => {
+      console.log("\t\t\t\t*****   Walkins  *******\n\n\n");
+        console.log(walkins);
+        if (!walkins) {
+          return res.status(404).send();
+        }
+        Enquiry.find({
+          number: phoneNumber,
+          customerId: req.user._id
+        }).then((enquiry) => {
+        console.log("\t\t\t\t*****   Enquiry  *******\n\n\n");
+        console.log(enquiry);
+          
+          if (!enquiry) {
+            return res.status(404).send();
+          }
+
+          var interaction={
+            
+              "type" : "Enquiry",
+              "Data" : Enquiry,
+            // }],[{
+              "type" : "Appointment",
+              "Data" : appointment,
+            // }],
+            // [{
+              "type" : "Walkins",
+              "Data" : walkins
+            // }]
+          };
+console.log("**** Interaction ****\n\n");
+          console.log(interaction);
+          res.json(interaction);
+        }).catch((e) => {
+          res.status(400).send();
+        });
+        // res.send({customerByName});
+      }).catch((e) => {
+        res.status(400).send();
+      });
+      // res.send({customerByName});
     }).catch((e) => {
       res.status(400).send();
     });

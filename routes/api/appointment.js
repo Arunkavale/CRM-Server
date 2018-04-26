@@ -1,10 +1,10 @@
 var router = require('express').Router();
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var Appointment = mongoose.model('Appointment');
 
 var {authenticate} = require('../authenticate');
 var Customer=mongoose.model('Customer');
+var Appointment = mongoose.model('Appointment');
 var Enquiry=mongoose.model('enquiry');
 var Walkins = mongoose.model('Walkins');
 var moment = require('moment');
@@ -23,6 +23,50 @@ router.get('/getAppointment', authenticate, (req, res) => {
     });
   });
   
+  router.get('/getTodaysAppointment', authenticate, (req, res) => {
+
+    var start = moment().startOf('day'); // set to 12:00 am today
+    var end = moment().endOf('day'); // set to 23:59 pm today
+    Appointment.find({
+      $and :[ { appointmentTime: {$gte: start, $lt: end }},{ customerId: req.user._id }]
+      }).then((appointment) => {
+        console.log("TOdays Appointment \n\n\n");
+        console.log(appointment);
+        if(appointment.length>=1){
+          res.send({appointment});
+        }
+        else{
+          res.send({'message':'Sorry no appointment available today'});
+          
+        }
+    }, (e) => {
+      res.status(400).send(e);
+    });
+  });
+
+
+
+  router.get('/getFuturesAppointment', authenticate, (req, res) => {
+
+    var start = moment().startOf('day'); // set to 12:00 am today
+    var end = moment().endOf('day'); // set to 23:59 pm today
+    Appointment.find({
+      $and :[ { appointmentTime: {$gte: start }},{ customerId: req.user._id }]
+      }).then((appointment) => {
+        console.log("TOdays Appointment \n\n\n");
+        console.log(appointment);
+        if(appointment.length>=1){
+          res.send({appointment});
+        }
+        else{
+          res.send({'message':'Sorry no Future appointment available '});
+          
+        }
+    }, (e) => {
+      res.status(400).send(e);
+    });
+  });
+
 
 
   router.put('/updateAppointment/:id', authenticate, (req, res) => {

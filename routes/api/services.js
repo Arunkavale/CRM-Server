@@ -82,5 +82,24 @@ router.post('/createServices', SubAuthenticate, (req, res) => {
   });
   
 
+  router.put('/serviceAvailedToday/:id', SubAuthenticate, (req, res) => {
+    console.log(" ***** Update Service ******\n\n");
+    var id = req.params.id;
+    var body = req.body;
+    console.log(body);
+
+  
+  
+    Services.findOneAndUpdate({ _creator: id}, {$set: body}, {new: true}).then((services) => {
+      if (!services) {
+        return res.status(404).send();
+      }
+  
+      res.send({services});
+    }).catch((e) => {
+      res.status(400).send();
+    })
+  });
+
 
 module.exports = router;
