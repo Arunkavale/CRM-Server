@@ -34,7 +34,12 @@ var Walkins = mongoose.model('Walkins');
 
   router.get('/getCustomerByNumber/:customerNumber', authenticate, (req, res) => {
     console.log("***** Get Customer by Number *****\n\n");
+
     var customerNumber = req.params.customerNumber;
+
+    if (!(typeof(customerNumber)==='number')) {
+      return res.status(404).send({'Message':'please enter valid Phone Number'});
+    }
     console.log(customerNumber);
     Customer.findOne({
         customerNumber: customerNumber,
@@ -55,6 +60,7 @@ var Walkins = mongoose.model('Walkins');
     console.log("****** Customer Post *****\n\n ");
     console.log(req.body);
     
+
     var customer = new Customer({
       customerNumber: req.body.customerNumber,
       customerName: req.body.customerName,
@@ -92,6 +98,7 @@ var Walkins = mongoose.model('Walkins');
   router.get('/getCustomerInteraction/:phoneNumber', authenticate, (req, res) => {
     console.log("***** Get Customer by name *****\n\n");
     var phoneNumber = req.params.phoneNumber;
+    var data={};
     // console.log(customerName);
     Appointment.find({
       phoneNumber: phoneNumber,
@@ -99,6 +106,13 @@ var Walkins = mongoose.model('Walkins');
     }).then((appointment) => {
       console.log("\t\t\t\t*****   Appointments *******\n\n\n");
       console.log(appointment);
+      // appointment={
+      //   "type" : "Appointment",
+      //     "Data" : appointment
+      // }
+      // data[0]=appointment;
+
+      data.appointment=appointment;
       if (!appointment) {
         return res.status(404).send();
       }
@@ -106,6 +120,12 @@ var Walkins = mongoose.model('Walkins');
         customerPhoneNumber: phoneNumber,
         customerId: req.user._id
       }).then((walkins) => {
+        data.walkins=walkins;
+        // walkins={
+        //   "type" : "Walkins",
+        //   "Data" : walkins
+        // }
+        // data[1]=walkins;
       console.log("\t\t\t\t*****   Walkins  *******\n\n\n");
         console.log(walkins);
         if (!walkins) {
@@ -115,6 +135,13 @@ var Walkins = mongoose.model('Walkins');
           number: phoneNumber,
           customerId: req.user._id
         }).then((enquiry) => {
+
+          data.enquiry=enquiry;
+          // enquiry={
+          //   "type" : "Enquiry",
+          //   "Data" : Enquiry,
+          // }
+          // data[2]=enquiry;
         console.log("\t\t\t\t*****   Enquiry  *******\n\n\n");
         console.log(enquiry);
           
@@ -122,31 +149,20 @@ var Walkins = mongoose.model('Walkins');
             return res.status(404).send();
           }
 
-          var interaction={
-            
-              "type" : "Enquiry",
-              "Data" : Enquiry,
-            // }],[{
-              "type" : "Appointment",
-              "Data" : appointment,
-            // }],
-            // [{
-              "type" : "Walkins",
-              "Data" : walkins
-            // }]
-          };
-console.log("**** Interaction ****\n\n");
-          console.log(interaction);
-          res.json(interaction);
+          res.json(data);
         }).catch((e) => {
+          console.log(e);
           res.status(400).send();
         });
         // res.send({customerByName});
       }).catch((e) => {
+        console.log(e);
         res.status(400).send();
       });
       // res.send({customerByName});
     }).catch((e) => {
+      console.log(e);
+      
       res.status(400).send();
     });
   });

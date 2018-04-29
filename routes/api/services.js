@@ -4,6 +4,7 @@ var User = mongoose.model('User');
 const _ = require('lodash');
 var {SubAuthenticate} = require('../subAuthenticate');
 var Services=mongoose.model('services');
+var moment = require('moment');
 
 
 
@@ -80,26 +81,44 @@ router.post('/createServices', SubAuthenticate, (req, res) => {
       res.status(400).send();
     })
   });
-  
 
-  router.put('/serviceAvailedToday/:id', SubAuthenticate, (req, res) => {
+  router.get('/getServiceAvailToday', SubAuthenticate, (req, res) => {
     console.log(" ***** Update Service ******\n\n");
-    var id = req.params.id;
+    // var id = req;
+    var start = moment().startOf('day'); // set to 12:00 am today
+    var end = moment().endOf('day');
     var body = req.body;
-    console.log(body);
+    // console.log(body);
 
   
-  
-    Services.findOneAndUpdate({ _creator: id}, {$set: body}, {new: true}).then((services) => {
-      if (!services) {
-        return res.status(404).send();
-      }
-  
-      res.send({services});
+    Services.find({
+      $and :[ { createdTime: {$gte: start, $lt: end }},{ _creator: req.subscriber._id }]
+    }).then((todayServices) => {
+      res.send({todayServices});
     }).catch((e) => {
       res.status(400).send();
     })
   });
+  
+
+  // router.put('/serviceAvailedToday/:id', SubAuthenticate, (req, res) => {
+  //   console.log(" ***** Update Service ******\n\n");
+  //   var id = req.params.id;
+  //   var body = req.body;
+  //   console.log(body);
+
+  
+  
+  //   Services.findOneAndUpdate({ _creator: id}, {$set: body}, {new: true}).then((services) => {
+  //     if (!services) {
+  //       return res.status(404).send();
+  //     }
+  
+  //     res.send({services});
+  //   }).catch((e) => {
+  //     res.status(400).send();
+  //   })
+  // });
 
 
 module.exports = router;

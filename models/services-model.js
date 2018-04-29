@@ -1,11 +1,13 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+Schema = mongoose.Schema;
+
 
 /**
  * 
  * Sevices Model
  * 
  */ 
-var Services = mongoose.model('services', {
+var Services = new Schema(  {
     categoryName: {
     type: String,
     required: true,
@@ -22,6 +24,10 @@ var Services = mongoose.model('services', {
     required: true,
     unique:true
   }
-});
+},{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
+
+
+mongoose.model('services',Services);
+
 
 module.exports = {Services};

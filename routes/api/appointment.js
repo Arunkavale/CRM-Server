@@ -2,6 +2,8 @@ var router = require('express').Router();
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 
+const {ObjectID} = require('mongodb');
+
 var {authenticate} = require('../authenticate');
 var Customer=mongoose.model('Customer');
 var Appointment = mongoose.model('Appointment');
@@ -72,6 +74,10 @@ router.get('/getAppointment', authenticate, (req, res) => {
   router.put('/updateAppointment/:id', authenticate, (req, res) => {
     console.log(" ***** Update Appointment ******\n\n");
     var id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+      return res.status(404).send({'Message':'please enter proper ID'});
+    }
     console.log(id);
 
     var body = req.body;
@@ -97,6 +103,10 @@ router.get('/getAppointment', authenticate, (req, res) => {
   router.get('/getLastInteraction/:id', authenticate, (req, res) => {
     console.log(req.param.id);
     var id = req.params.id;
+    console.log(typeof(id))
+    // if (!(typeof(id)==='number')) {
+    //   return res.status(404).send({'Message':'please enter valid Phone Number'});
+    // }
 
     console.log(id);
 
@@ -172,79 +182,86 @@ router.get('/getAppointment', authenticate, (req, res) => {
   router.post('/appointment', authenticate, (req, res) => {
     console.log("****** Appointment Post ****\n\n");
     console.log(req.body);
-    var appiontment = new Appointment({
-      name: req.body.name,
-      phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
-      dob: moment.unix(req.body.dob),
-      address: req.body.address,
-      notes: req.body.notes,
-      appointmentTime: moment.unix(req.body.appointmentTime),
-      interactionType: req.body.interactionType,
-      customerId: req.user._id
-    });
-    appiontment.save().then((doc) => {
+    if(typeof(req.body)==='object'){
 
-      Customer.find({customerNumber : req.body.phoneNumber}).exec(function (err, customer) {
-        if (err) {
-          return res.status(400).send({
-            message: errorHandler.getErrorMessage(err)
-          });
-        } else {
-          console.log(customer);
-          if(customer[0]==undefined||customer[0]==null||customer[0]==''){
-            console.log("customer not present");
-            var customer = new Customer({
-              customerNumber: req.body.phoneNumber,
-              customerName: req.body.name,
-              email: req.body.email,
-              dob: moment.unix(req.body.dob),
-              address: req.body.address,
-              _creator: req.user._id
+      var appiontment = new Appointment({
+        name: req.body.name,
+        phoneNumber: req.body.phoneNumber,
+        email: req.body.email,
+        dob: moment.unix(req.body.dob),
+        address: req.body.address,
+        notes: req.body.notes,
+        appointmentTime: moment.unix(req.body.appointmentTime),
+        interactionType: req.body.interactionType,
+        customerId: req.user._id
+      });
+      appiontment.save().then((doc) => {
+  
+        Customer.find({customerNumber : req.body.phoneNumber}).exec(function (err, customer) {
+          if (err) {
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
             });
+          } else {
             console.log(customer);
-            customer.save().then((customer) => {
-                console.log("Customer Saved");
-              // res.send(saved); 
-              res.send(doc);
-              
-            }, (e) => {
-              res.status(400).send(e);
-            });
-          }
-          else{
-            console.log("customer present");
-            // res.send(doc);
-
-
-            var myQuery = {
-              'customerNumber': req.body.phoneNumber
-            };
-            var newData = {
-              $set: {
+            if(customer[0]==undefined||customer[0]==null||customer[0]==''){
+              console.log("customer not present");
+              var customer = new Customer({
+                customerNumber: req.body.phoneNumber,
                 customerName: req.body.name,
                 email: req.body.email,
                 dob: moment.unix(req.body.dob),
                 address: req.body.address,
-              }
-            };
-            
-            console.log(customer);
-            Customer.update(myQuery, newData).exec(function (err, data) {
-              if (err) {
-                return res.status(400).send({
-                  message: errorHandler.getErrorMessage(err)
-                });
-              } else {
-                res.json(doc);
-              }
-            });
+                _creator: req.user._id
+              });
+              console.log(customer);
+              customer.save().then((customer) => {
+                  console.log("Customer Saved");
+                // res.send(saved); 
+                res.send(doc);
+                
+              }, (e) => {
+                res.status(400).send(e);
+              });
+            }
+            else{
+              console.log("customer present");
+              // res.send(doc);
+  
+  
+              var myQuery = {
+                'customerNumber': req.body.phoneNumber
+              };
+              var newData = {
+                $set: {
+                  customerName: req.body.name,
+                  email: req.body.email,
+                  dob: moment.unix(req.body.dob),
+                  address: req.body.address,
+                }
+              };
+              
+              console.log(customer);
+              Customer.update(myQuery, newData).exec(function (err, data) {
+                if (err) {
+                  return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                  });
+                } else {
+                  res.json(doc);
+                }
+              });
+            }
           }
-        }
+        });
+      }, (e) => {
+        res.status(400).send(e);
       });
-    }, (e) => {
-      res.status(400).send(e);
-    });
+    }
+    else{
+      res.status(200).send({'Message':'please send  in proper formate '});
+    }
+    
   });
   
 

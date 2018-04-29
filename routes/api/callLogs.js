@@ -15,10 +15,18 @@
 
     router.post('/calllogs', authenticate, (req, res) => {
         console.log("inside calllogs Post request")
+        
         var dob,email,user=req.user._id;
         
         var data=req.body;
+        console.log(typeof(req.body));
+
         console.log(data.length);
+        // if(req.body instanceof Array ){
+        // }
+
+        if(req.body instanceof Array ){
+        
         for(var i=0;i<data.length;i++){
             console.log(data[i]);
 
@@ -85,6 +93,10 @@
             console.log("******// Call logs //******");
             console.log(calllogs);
            
+        }
+    }
+    else{
+        res.send({'Message':'please send  in proper formate '});
         }
     });
   
