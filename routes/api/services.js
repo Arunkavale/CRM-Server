@@ -73,7 +73,8 @@ router.post('/createServices', SubAuthenticate, (req, res) => {
     Services.find({
       _creator: req.subscriber._id
     }).then((services) => {
-      res.send({services});
+      // console.logser
+      res.send(services[0]);
     }, (e) => {
       res.status(400).send(e);
     });
