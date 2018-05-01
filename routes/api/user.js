@@ -2,8 +2,10 @@
     var mongoose = require('mongoose');
     var User = mongoose.model('User');
     const _ = require('lodash');
-var moment = require('moment');
-    
+    var moment = require('moment');
+        
+    var {SubAuthenticate} = require('../subAuthenticate');
+    var Subscriber=mongoose.model('Subscriber');
 
     var {authenticate} = require('../authenticate');
     // var Call_logs=mongoose.model('Call_logs');
@@ -14,6 +16,18 @@ var moment = require('moment');
         res.send(req.user);
     });
   
+
+    router.get('/users', SubAuthenticate, (req, res) => {
+
+        User.find(/* { */
+            // _creator: req.subscriber._id}
+        ).then((operators) => {
+            res.send({operators});
+          }, (e) => {
+            res.status(400).send(e);
+          });
+        // res.send(req.user);
+    });
 
     router.post('/users', (req, res) => {
         console.log("**** User Post *****\n\n");

@@ -8,20 +8,23 @@ Schema = mongoose.Schema;
  * 
  */ 
 var Services = new Schema(  {
-    categoryName: {
-    type: String,
-    required: true,
-    minlength: 1,
-    trim: true
-  },
-  services: {
+  Services:{
     type:Array,
     required:true
   },
-  
+  //   categoryName: {
+  //   type: String,
+  //   // required: true,
+  //   minlength: 1,
+  //   trim: true
+  // },
+  // services: {
+  //   type:Array,
+  //   // required:true
+  // },
   _creator: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    // required: true,
     unique:true
   }
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});

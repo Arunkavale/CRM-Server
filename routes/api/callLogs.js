@@ -4,6 +4,7 @@
 
     var {authenticate} = require('../authenticate');
     var Call_logs=mongoose.model('Call_logs');
+var UnattendedCalls=mongoose.model('unattendedCalls');
     
 
     var moment = require('moment');
@@ -15,7 +16,7 @@
 
     router.post('/calllogs', authenticate, (req, res) => {
         console.log("inside calllogs Post request")
-        
+
         var dob,email,user=req.user._id;
         
         var data=req.body;
@@ -47,17 +48,33 @@
                 
             }else{
 
+                
                 calllogs.save().then((doc) => {
-                    console.log(doc);
+                    // console.log(doc);
                     console.log("**** call logs **** \n\n");
                     console.log(doc);
+                    if(doc.callType==='Incoming'||doc.callType==='Outgoing'){
+                        console.log("inside incoming and outgoing");
+                        UnattendedCalls.remove({
+                            'number': doc.customerNumber
+                          }).exec(function (err, removedData) {
+                            if (err) {
+                              message: errorHandler.getErrorMessage(err)
+                              return res.status(400).send({
+                        
+                              });
+                            }
+                            else{
+                                console.log(removedData);
+                            }
+                        });
+                    }
                     Customer.find({customerNumber : doc.customerNumber}).exec(function (err, customer) {
                         if (err) {
                         return res.status(400).send({
                             message: errorHandler.getErrorMessage(err)
                         });
                         } else {
-                        console.log(customer);
                         if(customer[0]==undefined||customer[0]==null||customer[0]==''){
                             console.log("customer not present");
                             var customer = new Customer({
@@ -68,10 +85,8 @@
                             console.log(customer);
                             customer.save().then((customer) => {
                                 console.log("Customer Saved");
-                           
-                            
                             }, (e) => {
-                            res.status(400).send(e);
+                                res.status(400).send(e);
                             });
                         }
                         else{
@@ -82,8 +97,9 @@
                             }
                         }
                      });
-                res.send(doc);
-                     
+                    //  if(i==data.length-1){
+                    
+                    //  }
                 }, (e) => {
                     res.status(400).send(e);
                 });
@@ -94,6 +110,7 @@
             console.log(calllogs);
            
         }
+        res.send({'Message':'CallLogs Added Sucessfully'});
     }
     else{
         res.send({'Message':'please send  in proper formate '});
