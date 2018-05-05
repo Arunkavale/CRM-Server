@@ -4,7 +4,7 @@
 
     var {authenticate} = require('../authenticate');
     var Call_logs=mongoose.model('Call_logs');
-var UnattendedCalls=mongoose.model('unattendedCalls');
+    var UnattendedCalls=mongoose.model('unattendedCalls');
     
 
     var moment = require('moment');
@@ -20,9 +20,21 @@ var UnattendedCalls=mongoose.model('unattendedCalls');
         var dob,email,user=req.user._id;
         
         var data=req.body;
+
         console.log(typeof(req.body));
 
         console.log(data.length);
+
+        // async.eachSeries(data, function updateObject (obj, done) {
+          
+            
+
+        // }, function allDone (err) {
+        //     // this will be called when all the updates are done or an error occurred during the iteration
+        // });
+
+
+
         // if(req.body instanceof Array ){
         // }
 
@@ -42,9 +54,12 @@ var UnattendedCalls=mongoose.model('unattendedCalls');
                 recordingFile: req.body[i].recordingFile,
                 purpose: req.body[i].purpose,
                 _creator: req.user._id
+                
+                
             });
             if(data[i].callType!=="Missed" && !req.body[i].hasOwnProperty("purpose")){
                 res.send({'Message':'Perpose is required'});
+                break;
                 
             }else{
 
@@ -78,9 +93,9 @@ var UnattendedCalls=mongoose.model('unattendedCalls');
                         if(customer[0]==undefined||customer[0]==null||customer[0]==''){
                             console.log("customer not present");
                             var customer = new Customer({
-                            customerNumber: doc.customerNumber,
-                            customerName: doc.customerName,
-                            _creator: req.user._id
+                                customerNumber: doc.customerNumber,
+                                customerName: doc.customerName,
+                                _creator: req.user._id
                             });
                             console.log(customer);
                             customer.save().then((customer) => {
@@ -97,9 +112,8 @@ var UnattendedCalls=mongoose.model('unattendedCalls');
                             }
                         }
                      });
-                    //  if(i==data.length-1){
-                    
-                    //  }
+                res.send({'Message':'CallLogs Added Sucessfully'});
+                  
                 }, (e) => {
                     res.status(400).send(e);
                 });
@@ -110,10 +124,9 @@ var UnattendedCalls=mongoose.model('unattendedCalls');
             console.log(calllogs);
            
         }
-        res.send({'Message':'CallLogs Added Sucessfully'});
     }
     else{
-        res.send({'Message':'please send  in proper formate '});
+        res.send({'Message':'Request Formate is wrong'});
         }
     });
   

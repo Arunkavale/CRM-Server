@@ -61,20 +61,36 @@ var Walkins = mongoose.model('Walkins');
     console.log(req.body);
     
 
-    var customer = new Customer({
-      customerNumber: req.body.customerNumber,
-      customerName: req.body.customerName,
-      address: req.body.address,
-      email: req.body.email,
-      dob: moment.unix(req.body.dob),
-      _creator: req.user._id
+    
+
+    Customer.find(
+      {$and :[ { customerNumber: req.body.customerNumber},{ _creator: req.user._id }]}
+      ).then((customer) => {
+        console.log("**** INSide Customer Create *****\n\n\n");
+        console.log(customer);
+        if(customer[0]==undefined || customer[0]==null){
+          var customer = new Customer({
+            customerNumber: req.body.customerNumber,
+            customerName: req.body.customerName,
+            address: req.body.address,
+            email: req.body.email,
+            dob: moment.unix(req.body.dob),
+            _creator: req.user._id
+          });
+          customer.save().then((customer) => {
+            res.send(customer);
+          }, (e) => {
+            res.status(400).send(e);
+          });
+        }else{
+          res.send({'Message':"Customer is Present for this Operatore"});
+        }
+      });
     });
-    customer.save().then((customer) => {
-      res.send(customer);
-    }, (e) => {
-      res.status(400).send(e);
-    });
-  });
+
+
+
+   
   
 
   router.get('/getCustomerByName/:customerName', authenticate, (req, res) => {

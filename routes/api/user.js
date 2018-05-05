@@ -19,8 +19,8 @@
 
     router.get('/users', SubAuthenticate, (req, res) => {
 
-        User.find(/* { */
-            // _creator: req.subscriber._id}
+        User.find( {
+            subscriberId: req.subscriber._id}
         ).then((operators) => {
             res.send({operators});
           }, (e) => {
@@ -29,17 +29,17 @@
         // res.send(req.user);
     });
 
-    router.post('/users', (req, res) => {
+    router.post('/users',SubAuthenticate, (req, res) => {
         console.log("**** User Post *****\n\n");
         console.log(req.body);
         var body = req.body;
         body.dob=moment.unix(body.dob);
+        body.subscriberId=req.subscriber._id;
         var user = new  User(body);
-        
         user.save().then(() => {
             return user.generateAuthToken();
         }).then((token) => {
-            res.header('user-auth', token).send(user);
+            res./* header('user-auth', token). */send({'Message':"user Added Sucessfully"});
         }).catch((e) => {
             res.status(400).send(e);
         })

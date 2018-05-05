@@ -67,7 +67,7 @@ var UserSchema = new mongoose.Schema({
     required: true
   },
   subscriberId: {
-    type: Number,
+    type: mongoose.Schema.Types.ObjectId,
     required: true
   },
   // enquiryTime: {
@@ -96,6 +96,7 @@ var UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+ 
   tokens: [{
     access: {
       type: String,

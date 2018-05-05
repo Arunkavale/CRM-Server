@@ -14,8 +14,7 @@ var Customer =  new Schema({
         type: Number,
         required: true,
         minlength: 10,
-        trim: true,
-        unique:true
+        trim: true
     },
     customerName: {
         type:String,

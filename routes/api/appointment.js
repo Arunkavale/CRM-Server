@@ -175,12 +175,14 @@ router.get('/getAppointment', authenticate, (req, res) => {
                 message: errorHandler.getErrorMessage(err)
               });
             }else{
-              if(appointment!=null||appointment!=undefined){
+              console.log("Appointment");
+              if(appointment!=null && enquiry!=null && walkins!=null){
+                console.log(walkins);
+                console.log(enquiry);
                 if(appointment.createdTime>enquiry.createdTime){
                   console.log("appointement is latest");
                   if(appointment.createdTime>walkins.createdTime){
                     res.send({"type":"appointment","data":appointment});
-
                   }
                   else{
                     res.send({"type":"walkins","data":walkins});
@@ -189,16 +191,57 @@ router.get('/getAppointment', authenticate, (req, res) => {
                 else{
                   if(enquiry.createdTime>walkins.createdTime){
                     res.send({"type":"enquiry","data":enquiry});
-
                   }
                   else{
                     res.send({"type":"walkins","data":walkins});
                   }
-
-                  console.log("Enquiry is latest");
-                  // res.send({enquiry});
                 }
-              }else{
+              }
+              else if(appointment!=null && enquiry!=null && walkins==null){
+                if(appointment.createdTime>enquiry.createdTime){
+                    res.send({"type":"appointment","data":appointment});
+                }
+                else{
+                  res.send({"type":"enquiry","data":enquiry});
+                }
+              }
+              else if(appointment!=null && enquiry==null && walkins!=null){
+                if(appointment.createdTime>walkins.createdTime){
+                  res.send({"type":"appointment","data":appointment});
+                }
+                else{
+                  res.send({"type":"walkins","data":walkins});
+                }
+              }
+              else if(appointment==null && enquiry!=null && walkins!=null){
+                if(enquiry.createdTime>walkins.createdTime){
+                  res.send({"type":"enquiry","data":enquiry});
+                }
+                else{
+                  res.send({"type":"walkins","data":walkins});
+                }
+              }
+              else if(appointment==null && enquiry!=null && walkins!=null){
+                if(enquiry.createdTime>walkins.createdTime){
+                  res.send({"type":"enquiry","data":enquiry});
+                }
+                else{
+                  res.send({"type":"walkins","data":walkins});
+                }
+              }
+              else if(appointment!=null && enquiry==null && walkins==null){
+                res.send({"type":"appointment","data":appointment});
+              }
+
+              else if(appointment==null && enquiry==null && walkins!=null){
+                // res.send({"type":"appointment","data":appointment});
+                res.send({"type":"walkins","data":walkins});
+                
+              }
+              else if(appointment!=null && enquiry==null && walkins==null){
+                res.send({"type":"appointment","data":appointment});
+              }
+              else{
                 res.send({'message':"Customer details not available"});
                 
               }
