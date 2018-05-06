@@ -21,13 +21,13 @@ var callLogsSchema = new mongoose.Schema({
         trim: true
     },
     datetime: {
-        type: Date,
+        type: Number,
         required: true,
         // minlength: 2,
         trim: true
     },
     timeOfCall: {
-        type: Date,
+        type: Number,
         required: true,
         // minlength: 2,
       
@@ -60,7 +60,11 @@ var callLogsSchema = new mongoose.Schema({
     _creator: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
-      }
+      },
+      subscriberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      },
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 
 // var Call_logs = mongoose.model('Call_logs',{

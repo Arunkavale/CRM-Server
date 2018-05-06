@@ -29,7 +29,8 @@ router.post('/walkins', authenticate, (req, res) => {
       grandTotal: req.body.grandTotal,
         
       }], */
-      customerId: req.user._id
+      customerId: req.user._id,
+      
     });
    
     walkins.save().then((doc) => {
@@ -40,7 +41,7 @@ router.post('/walkins', authenticate, (req, res) => {
       
       console.log(doc.timeStamp);
       console.log(doc);
-      Customer.find({customerNumber : req.body.customerPhoneNumber}).exec(function (err, customer) {
+      Customer.find( {$and :[ { customerNumber: req.body.customerNumber},{ _creator: req.user._id }]}).exec(function (err, customer) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
@@ -73,9 +74,6 @@ router.post('/walkins', authenticate, (req, res) => {
             console.log("customer present");
             console.log(doc);
             res.send(doc);
-
-           
-            
           }
         }
       });

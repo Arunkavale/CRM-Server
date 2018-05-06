@@ -27,6 +27,10 @@ var Services = new Schema(  {
     // required: true,
     unique:true
   }
+ /*  subscriberId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  } */
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 
 

@@ -47,13 +47,17 @@ var Enquiry = new Schema( {
         required:true
     },
     enquiryTime: {
-        type:Date,
+        type:Number,
         required:true
     },
     customerId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
-    }
+    },
+    subscriberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      }
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 
 mongoose.model('enquiry',Enquiry);

@@ -48,6 +48,10 @@ var Walkins = new Schema({
     customerId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
+      },
+      subscriberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
       }
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 mongoose.model('Walkins',Walkins);

@@ -35,14 +35,17 @@ var Customer =  new Schema({
         }
     },
     dob: {
-        type:Date
+        type:Number
         // required:true
     },
     _creator: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
-    }
+    },
+    subscriberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      }
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
-
 mongoose.model('Customer', Customer);
 // module.exports = {Customer};

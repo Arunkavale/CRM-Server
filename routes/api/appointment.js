@@ -20,6 +20,15 @@ router.get('/getAppointment', authenticate, (req, res) => {
     Appointment.find({
       customerId: req.user._id
     }).then((appointment) => {
+      // var data={
+      //   "type":"Appointment",
+      //   "Data":appointment,
+      // }
+      data.Data.appointmentTime=moment(appointment.appointmentTime).unix();
+      console.log("**** Appointment ***\n\n");
+      console.log(moment(appointment.appointmentTime).unix())
+      console.log(data.Data);
+      appointment.appointmentTime=moment(appointment.appointmentTime).unix();
       res.send({appointment});
     }, (e) => {
       res.status(400).send(e);
@@ -27,7 +36,6 @@ router.get('/getAppointment', authenticate, (req, res) => {
   });
   
   router.get('/getTodaysAppointment', authenticate, (req, res) => {
-
     var start = moment().startOf('day'); // set to 12:00 am today
     var end = moment().endOf('day'); // set to 23:59 pm today
     Appointment.find({
@@ -40,7 +48,6 @@ router.get('/getAppointment', authenticate, (req, res) => {
         }
         else{
           res.send({'message':'Sorry no appointment available today'});
-          
         }
     }, (e) => {
       res.status(400).send(e);
@@ -127,7 +134,7 @@ router.get('/getAppointment', authenticate, (req, res) => {
 
     var body = req.body;
     console.log(body);
-    body.appointmentTime=moment.unix(body.appointmentTime);
+    // body.appointmentTime=moment.unix(body.appointmentTime);
     body.dob=moment.unix(body.dob);
   
   
@@ -272,12 +279,13 @@ router.get('/getAppointment', authenticate, (req, res) => {
         name: req.body.name,
         phoneNumber: req.body.phoneNumber,
         email: req.body.email,
-        dob: moment.unix(req.body.dob),
+        dob: /* moment.unix( */req.body.dob,
         address: req.body.address,
         notes: req.body.notes,
-        appointmentTime: moment.unix(req.body.appointmentTime),
+        appointmentTime: /* moment.unix( */req.body.appointmentTime,
         interactionType: req.body.interactionType,
-        customerId: req.user._id
+        customerId: req.user._id,
+        subscriberId:req.user.subscriberId
       });
       appiontment.save().then((doc) => {
   
@@ -294,16 +302,16 @@ router.get('/getAppointment', authenticate, (req, res) => {
                 customerNumber: req.body.phoneNumber,
                 customerName: req.body.name,
                 email: req.body.email,
-                dob: moment.unix(req.body.dob),
+                dob: /* moment.unix( */req.body.dob,
                 address: req.body.address,
-                _creator: req.user._id
+                _creator: req.user._id,
+                subscriberId:req.user.subscriberId
+                
               });
               console.log(customer);
               customer.save().then((customer) => {
                   console.log("Customer Saved");
-                // res.send(saved); 
                 res.send(doc);
-                
               }, (e) => {
                 res.status(400).send(e);
               });
@@ -320,7 +328,7 @@ router.get('/getAppointment', authenticate, (req, res) => {
                 $set: {
                   customerName: req.body.name,
                   email: req.body.email,
-                  dob: moment.unix(req.body.dob),
+                  dob: /* moment.unix( */req.body.dob,
                   address: req.body.address,
                 }
               };

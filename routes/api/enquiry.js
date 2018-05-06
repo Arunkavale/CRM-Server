@@ -20,14 +20,16 @@ router.post('/enquiry', authenticate, (req, res) => {
       notes: req.body.notes,
       interactionType: req.body.interactionType,
       enquiryTime: moment.unix(req.body.enquiryTime),
-      customerId: req.user._id
+      customerId: req.user._id,
+      subscriberId:req.user.subscriberId
+      
     });
     console.log("******// Configuration //******");
     // console.log(walkins);
     enquiry.save().then((doc) => {
 
 
-      Customer.find({customerNumber : req.body.number}).exec(function (err, customer) {
+      Customer.find({$and :[ { customerNumber: req.body.customerNumber},{ _creator: req.user._id }]}).exec(function (err, customer) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
@@ -42,7 +44,8 @@ router.post('/enquiry', authenticate, (req, res) => {
               email: req.body.email,
               dob: moment.unix(req.body.dob),
               address: req.body.address,
-              _creator: req.user._id
+              _creator: req.user._id,
+              subscriberId:req.user.subscriberId
             });
             console.log(customer);
             customer.save().then((customer) => {

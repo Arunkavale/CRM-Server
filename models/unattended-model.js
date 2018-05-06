@@ -23,7 +23,11 @@ var UnattendedCalls = mongoose.model('unattendedCalls', {
     createdTime:{
         type:Date,
         required:true
-    }
+    },
+    subscriberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      }
 });
 
 module.exports = {UnattendedCalls};

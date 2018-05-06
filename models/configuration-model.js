@@ -47,6 +47,10 @@ var Configuration = mongoose.model('configuration', {
   _creator: {
     type: mongoose.Schema.Types.ObjectId,
     required: true
+  },
+  subscriberId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
   }
 });
 

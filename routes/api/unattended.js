@@ -16,7 +16,8 @@ router.post('/unattendedCalls', authenticate, (req, res) => {
       number: req.body.number,
       missedcalltime: moment.unix(req.body.missedcalltime),
       createdTime: new Date(),
-      customerId: req.user._id
+      customerId: req.user._id,
+      subscriberId:req.user.subscriberId
     });
     unattendedCalls.save().then((doc) => {
       var saved=[{ "status": "success" }]

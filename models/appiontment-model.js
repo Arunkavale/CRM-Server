@@ -26,7 +26,7 @@ var Appointment = new Schema({
         }
       },
     dob: {
-        type: Date,
+        type: Number,
         required: true,
     },
     address: {
@@ -51,9 +51,13 @@ var Appointment = new Schema({
         required: true
       },
       appointmentTime: {
-        type:Date,
+        type:Number,
         required:true
-    }
+    },
+    subscriberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      }
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 
 mongoose.model('Appointment',Appointment);
