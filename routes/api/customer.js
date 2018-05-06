@@ -74,7 +74,7 @@ var Walkins = mongoose.model('Walkins');
             customerName: req.body.customerName,
             address: req.body.address,
             email: req.body.email,
-            dob: moment.unix(req.body.dob),
+            dob: /* moment.unix( */req.body.dob,
             _creator: req.user._id,
             subscriberId:req.user.subscriberId
             
