@@ -13,7 +13,7 @@ var UnattendedCalls = mongoose.model('unattendedCalls', {
     
     },
     missedcalltime: {
-        type:Date,
+        type:Number,
         required:true
     },
     customerId: {
@@ -21,7 +21,7 @@ var UnattendedCalls = mongoose.model('unattendedCalls', {
         required: true
     },
     createdTime:{
-        type:Date,
+        type:Number,
         required:true
     },
     subscriberId: {

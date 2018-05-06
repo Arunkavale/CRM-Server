@@ -19,8 +19,8 @@ router.post('/walkins', authenticate, (req, res) => {
       customerName: req.body.customerName,
       address: req.body.address,
       notes: req.body.notes,
-      timeStamp: moment.unix(req.body.timeStamp),
-      createdDate:new Date(),
+      timeStamp: /* moment.unix( */req.body.timeStamp,
+      createdDate:new Date().getTime(),
       order:req.body.order, /* [{
         orderList:{
           serviceId1:req.body.order[0].serviceId1,
@@ -30,6 +30,7 @@ router.post('/walkins', authenticate, (req, res) => {
         
       }], */
       customerId: req.user._id,
+      subscriberId: req.user.subscriberId
       
     });
    
@@ -54,9 +55,11 @@ router.post('/walkins', authenticate, (req, res) => {
               customerNumber: req.body.customerPhoneNumber,
               customerName: req.body.customerName,
               email: req.body.email,
-              dob: moment.unix(req.body.dob),
+              dob: /* moment.unix( */req.body.dob,
               address: req.body.address,
-              _creator: req.user._id
+              _creator: req.user._id,
+              subscriberId: req.user.subscriberId
+              
             });
             console.log(customer);
             customer.save().then((customer) => {

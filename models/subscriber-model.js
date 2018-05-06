@@ -36,7 +36,7 @@ var subscriberSchema = new mongoose.Schema({
     minlength: 8
   },
   dob: {
-    type: Date,
+    type: Number,
     require: true
     // minlength: 8
   },
@@ -122,7 +122,7 @@ var subscriberSchema = new mongoose.Schema({
 //     unique: true
 //   },
   created: {
-    type: Date,
+    type: Number,
     default: Date.now
   },
   tokens: [{

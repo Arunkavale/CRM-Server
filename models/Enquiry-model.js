@@ -31,7 +31,7 @@ var Enquiry = new Schema( {
         }
     },
     dob: {
-        type:Date,
+        type:Number,
         required:true
     },
     address: {

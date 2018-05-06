@@ -26,12 +26,12 @@ var Walkins = new Schema({
         trim: true
     },
     timeStamp: {
-        type: Date,
+        type: Number,
         required: true,
         // minlength: 2,
     },
     createdDate: {
-        type: Date,
+        type: Number,
         required: true,
         // minlength: 2,
     },
