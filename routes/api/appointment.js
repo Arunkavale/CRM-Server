@@ -24,10 +24,10 @@ router.get('/getAppointment', authenticate, (req, res) => {
       //   "type":"Appointment",
       //   "Data":appointment,
       // }
-      data.Data.appointmentTime=moment(appointment.appointmentTime).unix();
+      //data.Data.appointmentTime=moment(appointment.appointmentTime).unix();
       console.log("**** Appointment ***\n\n");
-      console.log(moment(appointment.appointmentTime).unix())
-      console.log(data.Data);
+      // console.log(moment(appointment.appointmentTime).unix())
+      // console.log(data.Data);
       appointment.appointmentTime=moment(appointment.appointmentTime).unix();
       res.send({appointment});
     }, (e) => {
