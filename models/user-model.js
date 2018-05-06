@@ -36,7 +36,7 @@ var UserSchema = new mongoose.Schema({
     minlength: 8
   },
   dob: {
-    type: Date,
+    type: Number,
     require: true
     // minlength: 8
   },
