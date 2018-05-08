@@ -12,55 +12,60 @@
     
 
 
-    router.get('/users/me', authenticate, (req, res) => {
-        res.send(req.user);
+    router.get('/v1/users/me', authenticate, (req, res) => {
+        res.send({'statusCode':1,'data':req.user});
     });
   
 
-    router.get('/users', SubAuthenticate, (req, res) => {
-
+    router.get('/v1/operators', SubAuthenticate, (req, res) => {
         User.find( {
             subscriberId: req.subscriber._id}
         ).then((operators) => {
-            res.send({operators});
+            res.send({'statusCode':0,'type':'Operators','data':operators});
           }, (e) => {
             res.status(400).send(e);
           });
         // res.send(req.user);
     });
 
-    router.post('/users',SubAuthenticate, (req, res) => {
+    router.post('/v1/users',SubAuthenticate, (req, res) => {
         console.log("**** User Post *****\n\n");
         console.log(req.body);
         var body = req.body;
-        body.dob=moment.unix(body.dob);
+        // body.dob=moment.unix(body.dob);
         body.subscriberId=req.subscriber._id;
         var user = new  User(body);
         user.save().then(() => {
             return user.generateAuthToken();
         }).then((token) => {
-            res./* header('user-auth', token). */send({'Message':"user Added Sucessfully"});
+            res./* header('user-auth', token). */send({ 'statusCode':0,
+            'message':'User Added Sucessfully'});
         }).catch((e) => {
-            res.status(400).send(e);
+            if(e.code==11000){
+                res.status(400).send({'statusCode':2,'message':'User already available with same phone number'});
+              }else{
+                res.status(400).send({ 'statusCode':1,
+                'message':'Invalid Input'});
+              }
         })
     });
 
-    router.post('/users/login', (req, res) => {
+    router.post('/v1/users/login', (req, res) => {
         var body = _.pick(req.body, ['phone', 'password']);
-    
         User.findByCredentials(body.phone, body.password).then((user) => {
             return user.generateAuthToken().then((token) => {
-                res.header('user-auth', token).send(user);
+                res.header('user-auth', token).send({'statusCode':0,
+                'message':'User Logged In Sucessfully',
+                'data':user});
         });
         }).catch((e) => {
-            res.status(200).send({  "status": "error",
-            "errorCode":1001,
+            res.status(200).send({  "statusCode": 2,
             "message": "User is invalid"});
         });
     });
 
 
-    router.delete('/users/me/token', authenticate, (req, res) => {
+    router.delete('/v1/users/me/token', authenticate, (req, res) => {
         req.user.removeToken(req.token).then(() => {
           res.status(200).send();
         }, () => {

@@ -13,14 +13,32 @@
     // var customer=require('./customer');
     var Customer=mongoose.model('Customer');
 
-    router.post('/calllogs', authenticate, (req, res) => {
+    router.post('/v1/calllogs', authenticate, (req, res) => {
         console.log("inside calllogs Post request")
-
         var dob,email,user=req.user._id;
         var data=req.body;
+        var rmUnattendedCall=req.body;
+        var i=0;
         if(req.body instanceof Array ){
-            for(var i=0;i<data.length;i++){
+            
+            for( i=0;i<data.length;i++){
                 console.log(data[i]);
+                if(rmUnattendedCall[i].callType=='Missed'){
+                    console.log("inside incoming and outgoing");
+                    var unattendedCalls = new UnattendedCalls({
+                        number: rmUnattendedCall[i].customerNumber,
+                        missedcalltime: /* moment.unix( */rmUnattendedCall[i].timeOfCall,
+                        createdTime: new Date().getTime(),
+                        customerId: req.user._id,
+                        subscriberId:req.user.subscriberId
+                      });
+                      console.log(unattendedCalls);
+                    unattendedCalls.save().then((doc) => {
+
+                      }, (e) => {
+                        res.status(400).send(e);
+                      });
+                }
                 var calllogs = new Call_logs({
                     customerNumber: req.body[i].customerNumber,
                     customerName: req.body[i].customerName,
@@ -35,33 +53,39 @@
                     subscriberId:req.user.subscriberId
                 });
                 if(data[i].callType!=="Missed" && !req.body[i].hasOwnProperty("purpose")){
-                    res.send({'Message':'Perpose is required'});
+                    // res.send({'Message':'Perpose is required'});
+                        res.send({'statusCode':1,'message':'Invalid input (Purpose is required)'});
                     break;
                 }else{
                     calllogs.save().then((doc) => {
                         // console.log(doc);
-                        console.log("**** call logs **** \n\n");
+                        console.log("**** call logs Unattended call **** \n\n");
                         // console.log(doc);
-                        var rmUnattendedCall=req.body;
+                        // var rmUnattendedCall=req.body;
+                        
                         // console.log(rmUnattendedCall.length);
-                        for(var j=0;j<rmUnattendedCall.length;j++){
-                            if(rmUnattendedCall[j].callType==='Incoming'||rmUnattendedCall[j].callType==='Outgoing'){
-                                console.log("inside incoming and outgoing");
-                                UnattendedCalls.remove({
-                                    'number': rmUnattendedCall[j].customerNumber
-                                }).exec(function (err, removedData) {
-                                    if (err) {
-                                    message: errorHandler.getErrorMessage(err)
-                                    return res.status(400).send({
-                                
-                                    });
-                                    }
-                                    else{
-                                        console.log(removedData);
-                                    }
-                                });
-                            }
-                        }
+                        // for(var j=0;j<rmUnattendedCall.length;j++){
+                        //     if(rmUnattendedCall[j].callType==='Incoming'||rmUnattendedCall[j].callType==='Outgoing'){
+                        //         console.log("inside incoming and outgoing");
+
+                        //         UnattendedCalls.remove({
+                        //             'number': rmUnattendedCall[j].customerNumber
+                        //         }).exec(function (err, removedData) {
+                        //             if (err) {
+                        //                 console.log("inside Error");
+                        //                 message: errorHandler.getErrorMessage(err)
+                        //                 return res.status(400).send({
+                        //             });
+                        //             }
+                        //             else{
+                        //                 console.log(removedData);
+                        //             }
+                        //         });
+                        //     }
+                        // }
+
+
+                       
 
                         Customer.find({customerNumber : doc.customerNumber}).exec(function (err, customer) {
                             if (err) {
@@ -91,24 +115,20 @@
                                 }
                             }
                         });
-                    res.send({'Message':'CallLogs Added Sucessfully'});
-                    
+                        res.send({'statusCode':1,'message':'CallLogs Added Sucessfully'});
                     }, (e) => {
                         res.status(400).send(e);
                     });
-
                 }
-                console.log(req.body[i].hasOwnProperty("customerNumber"))
-                console.log("******// Call logs //******");
-                console.log(calllogs);
             }
     }
     else{
-        res.send({'Message':'Request Formate is wrong'});
+        // res.send({'Message':'Request Formate is wrong'});
+         res.send({'statusCode':1,'message':'Invalid input '});
         }
     });
   
-    router.get('/getRecordings/:fromDate/:toDate', SubAuthenticate, (req, res) => {
+    router.get('/v1/getRecordings/:fromDate/:toDate', SubAuthenticate, (req, res) => {
         var fromDate=moment.unix(req.params.fromDate);
         var toDate=moment.unix(req.params.toDate);
         console.log(fromDate);
@@ -116,19 +136,28 @@
         Call_logs.find({
             $and :[ { createdTime: {$gte: fromDate, $lt: toDate }},{ subscriberId: req.subscriber._id }]
         }).then((calllogs) => {
-          res.send({calllogs});
+            if(calllogs[0]==undefined||calllogs[0]==null||calllogs[0]==''){
+                res.send({'statusCode':2,'message':'No data Availbale'});
+            }
+            else{
+                res.send({'statusCode':0,'type':'calllogs','data':calllogs});
+            }
         }, (e) => {
           res.status(400).send(e);
         });
       });
 
 
-
-    router.get('/calllogs', authenticate, (req, res) => {
+    router.get('/v1/callLogs', authenticate, (req, res) => {
         Call_logs.find({
           _creator: req.user._id
         }).then((calllogs) => {
-          res.send({calllogs});
+            if(calllogs[0]==undefined||calllogs[0]==null){
+                res.send({'statusCode':2,'message':'No data Availbale'});
+              }
+              else{
+                res.send({'statusCode':0,'type':'calllogs','data':calllogs});
+              }
         }, (e) => {
           res.status(400).send(e);
         });

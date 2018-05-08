@@ -16,7 +16,7 @@ var SubAuthenticate = (req, res, next) => {
       req.token = token;
       next();
     }).catch((e) => {
-      res.status(401).send();
+      res.status(401).send({'statusCode':2,"message":"Please Login with Subscriber"});
     });
   };
   

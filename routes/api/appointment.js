@@ -16,38 +16,36 @@ var async = require('async');
 // var Call_logs=mongoose.model('Call_logs');
 
 
-router.get('/getAppointment', authenticate, (req, res) => {
+router.get('/v1/appointments', authenticate, (req, res) => {
     Appointment.find({
       customerId: req.user._id
     }).then((appointment) => {
-      // var data={
-      //   "type":"Appointment",
-      //   "Data":appointment,
-      // }
-      //data.Data.appointmentTime=moment(appointment.appointmentTime).unix();
       console.log("**** Appointment ***\n\n");
-      // console.log(moment(appointment.appointmentTime).unix())
-      // console.log(data.Data);
       appointment.appointmentTime=moment(appointment.appointmentTime).unix();
-      res.send({appointment});
+      if(appointment[0]==undefined||appointment[0]==null){
+        res.send({'statusCode':2,'message':'No data Availbale'});
+      }
+      else{
+        res.send({'statusCode':0,'type':'appointment','data':appointment});
+      }
     }, (e) => {
       res.status(400).send(e);
     });
   });
   
-  router.get('/getTodaysAppointment', authenticate, (req, res) => {
-    var start = moment().startOf('day'); // set to 12:00 am today
-    var end = moment().endOf('day'); // set to 23:59 pm today
+  router.get('/v1/todaysAppointments', authenticate, (req, res) => {
+    var start = moment().startOf('day').unix(); // set to 12:00 am today
+    var end = moment().endOf('day').unix(); // set to 23:59 pm today
     Appointment.find({
       $and :[ { appointmentTime: {$gte: start, $lt: end }},{ customerId: req.user._id }]
       }).then((appointment) => {
         console.log("TOdays Appointment \n\n\n");
         console.log(appointment);
         if(appointment.length>=1){
-          res.send({appointment});
+          res.send({'statusCode':0,'type':'appointment','data':appointment});
         }
         else{
-          res.send({'message':'Sorry no appointment available today'});
+          res.send({'statusCode':2,'message':'Sorry no appointment available today'});
         }
     }, (e) => {
       res.status(400).send(e);
@@ -79,8 +77,7 @@ router.get('/getAppointment', authenticate, (req, res) => {
 
 
 
-  router.get('/reports:daily', authenticate, (req, res) => {
-
+  router.get('/v1/reports:daily', authenticate, (req, res) => {
     var start = moment().startOf('day'); // set to 12:00 am today
     var end = moment().endOf('day'); // set to 23:59 pm today
     Appointment.find({
@@ -100,21 +97,40 @@ router.get('/getAppointment', authenticate, (req, res) => {
     });
   });
 
-  router.get('/getFuturesAppointment', authenticate, (req, res) => {
-
-    var start = moment().startOf('day'); // set to 12:00 am today
-    var end = moment().endOf('day'); // set to 23:59 pm today
+  router.get('/v1/futuresAppointments', authenticate, (req, res) => {
+    var start = moment().startOf('day').unix(); // set to 12:00 am today
+    var end = moment().endOf('day').unix(); // set to 23:59 pm today
     Appointment.find({
       $and :[ { appointmentTime: {$gte: start }},{ customerId: req.user._id }]
       }).then((appointment) => {
         console.log("TOdays Appointment \n\n\n");
         console.log(appointment);
         if(appointment.length>=1){
-          res.send({appointment});
+          // res.send({appointment});
+          res.send({'statusCode':0,"type":"appointment","data":appointment});
         }
         else{
-          res.send({'message':'Sorry no Future appointment available '});
-          
+          res.send({'statusCode':2,'message':'Sorry no Future appointment available '});
+        }
+    }, (e) => {
+      res.status(400).send(e);
+    });
+  });
+
+  router.get('/v1/pastAppointments', authenticate, (req, res) => {
+    var start = moment().startOf('day').unix(); // set to 12:00 am today
+    var end = moment().endOf('day').unix(); // set to 23:59 pm today
+    Appointment.find({
+      $and :[ { appointmentTime: {$lt: start }},{ customerId: req.user._id }]
+      }).then((appointment) => {
+        console.log("TOdays Appointment \n\n\n");
+        console.log(appointment);
+        if(appointment.length>=1){
+          // res.send({appointment});
+          res.send({'statusCode':0,"type":"appointment","data":appointment});
+        }
+        else{
+          res.send({'statusCode':2,'message':'Sorry no Past appointment available '});
         }
     }, (e) => {
       res.status(400).send(e);
@@ -123,36 +139,33 @@ router.get('/getAppointment', authenticate, (req, res) => {
 
 
 
-  router.put('/updateAppointment/:id', authenticate, (req, res) => {
+
+  router.put('/v1/appointments/:id', authenticate, (req, res) => {
     console.log(" ***** Update Appointment ******\n\n");
     var id = req.params.id;
-
     if (!ObjectID.isValid(id)) {
       return res.status(404).send({'Message':'please enter proper ID'});
     }
     console.log(id);
-
     var body = req.body;
     console.log(body);
     // body.appointmentTime=moment.unix(body.appointmentTime);
     body.dob=moment.unix(body.dob);
-  
-  
     Appointment.findOneAndUpdate({ _id: id}, {$set: body}, {new: true}).then((appiontment) => {
       console.log(appiontment);
       if (!appiontment) {
         return res.status(404).send();
       }
-  
-      res.send({appiontment});
+      // res.send({appiontment});
+      res.send({'statusCode':0,'type':'appointment','message':'appointment updated sucessfully','data':appiontment});
     }).catch((e) => {
-      console.log(e);
+      // console.log(e);
       res.status(400).send();
     })
   });
 
   
-  router.get('/getLastInteraction/:id', authenticate, (req, res) => {
+  router.get('/v1/lastInteractions/:id', authenticate, (req, res) => {
     console.log(req.param.id);
     var id = req.params.id;
     console.log(typeof(id))
@@ -189,75 +202,73 @@ router.get('/getAppointment', authenticate, (req, res) => {
                 if(appointment.createdTime>enquiry.createdTime){
                   console.log("appointement is latest");
                   if(appointment.createdTime>walkins.createdTime){
-                    res.send({"type":"appointment","data":appointment});
+                    res.send({'statusCode':0,"type":"appointment","data":appointment});
                   }
                   else{
-                    res.send({"type":"walkins","data":walkins});
+                    res.send({'statusCode':0,"type":"walkins","data":walkins});
                   }
                 }
                 else{
                   if(enquiry.createdTime>walkins.createdTime){
-                    res.send({"type":"enquiry","data":enquiry});
+                    res.send({'statusCode':0,"type":"enquiry","data":enquiry});
                   }
                   else{
-                    res.send({"type":"walkins","data":walkins});
+                    res.send({'statusCode':0,"type":"walkins","data":walkins});
                   }
                 }
               }
               else if(appointment!=null && enquiry!=null && walkins==null){
                 if(appointment.createdTime>enquiry.createdTime){
-                    res.send({"type":"appointment","data":appointment});
+                    res.send({'statusCode':0,"type":"appointment","data":appointment});
                 }
                 else{
-                  res.send({"type":"enquiry","data":enquiry});
+                  res.send({'statusCode':0,"type":"enquiry","data":enquiry});
                 }
               }
               else if(appointment!=null && enquiry==null && walkins!=null){
                 if(appointment.createdTime>walkins.createdTime){
-                  res.send({"type":"appointment","data":appointment});
+                  res.send({'statusCode':0,"type":"appointment","data":appointment});
                 }
                 else{
-                  res.send({"type":"walkins","data":walkins});
+                  res.send({'statusCode':0,"type":"walkins","data":walkins});
                 }
               }
               else if(appointment==null && enquiry!=null && walkins!=null){
                 if(enquiry.createdTime>walkins.createdTime){
-                  res.send({"type":"enquiry","data":enquiry});
+                  res.send({'statusCode':0,"type":"enquiry","data":enquiry});
                 }
                 else{
-                  res.send({"type":"walkins","data":walkins});
+                  res.send({'statusCode':0,"type":"walkins","data":walkins});
                 }
               }
               else if(appointment==null && enquiry!=null && walkins!=null){
                 if(enquiry.createdTime>walkins.createdTime){
-                  res.send({"type":"enquiry","data":enquiry});
+                  res.send({'statusCode':0,"type":"enquiry","data":enquiry});
                 }
                 else{
-                  res.send({"type":"walkins","data":walkins});
+                  res.send({'statusCode':0,"type":"walkins","data":walkins});
                 }
               }
               else if(appointment!=null && enquiry==null && walkins==null){
-                res.send({"type":"appointment","data":appointment});
+                res.send({'statusCode':0,"type":"appointment","data":appointment});
               }
 
               else if(appointment==null && enquiry==null && walkins!=null){
                 // res.send({"type":"appointment","data":appointment});
-                res.send({"type":"walkins","data":walkins});
+                res.send({'statusCode':0,"type":"walkins","data":walkins});
                 
               }
               else if(appointment!=null && enquiry==null && walkins==null){
-                res.send({"type":"appointment","data":appointment});
+                res.send({'statusCode':0,"type":"appointment","data":appointment});
               }
               else{
-                res.send({'message':"Customer details not available"});
-                
+                res.send({'statusCode':0,'message':"Customer details not available"});
               }
             }
           });
           console.log(" interaction Enquiry \n");
           console.log(appointment);
           console.log(enquiry);
-
         }
       });
       // res.send({appointment});
@@ -270,11 +281,10 @@ router.get('/getAppointment', authenticate, (req, res) => {
   
 
 
-  router.post('/appointment', authenticate, (req, res) => {
+  router.post('/v1/appointments', authenticate, (req, res) => {
     console.log("****** Appointment Post ****\n\n");
     console.log(req.body);
     if(typeof(req.body)==='object'){
-
       var appiontment = new Appointment({
         name: req.body.name,
         phoneNumber: req.body.phoneNumber,
@@ -288,7 +298,6 @@ router.get('/getAppointment', authenticate, (req, res) => {
         subscriberId:req.user.subscriberId
       });
       appiontment.save().then((doc) => {
-  
         Customer.find({customerNumber : req.body.phoneNumber}).exec(function (err, customer) {
           if (err) {
             return res.status(400).send({
@@ -306,12 +315,11 @@ router.get('/getAppointment', authenticate, (req, res) => {
                 address: req.body.address,
                 _creator: req.user._id,
                 subscriberId:req.user.subscriberId
-                
               });
               console.log(customer);
               customer.save().then((customer) => {
                   console.log("Customer Saved");
-                res.send(doc);
+                  res.send({'statusCode':0,'type':'appointment','data':doc});
               }, (e) => {
                 res.status(400).send(e);
               });
@@ -319,8 +327,6 @@ router.get('/getAppointment', authenticate, (req, res) => {
             else{
               console.log("customer present");
               // res.send(doc);
-  
-  
               var myQuery = {
                 'customerNumber': req.body.phoneNumber
               };
@@ -332,7 +338,6 @@ router.get('/getAppointment', authenticate, (req, res) => {
                   address: req.body.address,
                 }
               };
-              
               console.log(customer);
               Customer.update(myQuery, newData).exec(function (err, data) {
                 if (err) {
@@ -340,7 +345,7 @@ router.get('/getAppointment', authenticate, (req, res) => {
                     message: errorHandler.getErrorMessage(err)
                   });
                 } else {
-                  res.json(doc);
+                  res.send({'statusCode':0,'type':'appointment','message':'appointment added sucessfully','data':doc});
                 }
               });
             }
@@ -351,9 +356,10 @@ router.get('/getAppointment', authenticate, (req, res) => {
       });
     }
     else{
-      res.status(200).send({'Message':'please send  in proper formate '});
+      // res.status(200).send({'Message':'please send  in proper formate '});
+      res.send({'statusCode':1,'message':'Invalid input'});
+      
     }
-    
   });
   
 

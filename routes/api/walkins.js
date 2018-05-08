@@ -9,8 +9,7 @@ var {authenticate} = require('../authenticate');
 
 
 
-router.post('/walkins', authenticate, (req, res) => {
-
+router.post('/v1/walkins', authenticate, (req, res) => {
     console.log("***** Walkins Post *****\n\n");
     console.log(req.body);
     
@@ -39,7 +38,6 @@ router.post('/walkins', authenticate, (req, res) => {
       var timeStamp=Date.parse(doc.timeStamp);
       console.log(timeStamp);
       doc.timeStamp=timeStamp;
-      
       console.log(doc.timeStamp);
       console.log(doc);
       Customer.find( {$and :[ { customerNumber: req.body.customerNumber},{ _creator: req.user._id }]}).exec(function (err, customer) {
@@ -66,8 +64,8 @@ router.post('/walkins', authenticate, (req, res) => {
                 console.log("Customer Saved");
               // res.send(saved); 
               
-              res.send(doc);
-              
+              // res.send(doc);
+              res.send({'statusCode':0,'type':'walkins','message':'walkins added sucessfully','data':doc});
             }, (e) => {
               res.status(400).send(e);
             });
@@ -76,7 +74,8 @@ router.post('/walkins', authenticate, (req, res) => {
             doc.timeStamp=timeStamp;
             console.log("customer present");
             console.log(doc);
-            res.send(doc);
+            // res.send(doc);
+            res.send({'statusCode':0,'type':'walkins','message':'walkins added sucessfully','data':doc});
           }
         }
       });
@@ -88,27 +87,27 @@ router.post('/walkins', authenticate, (req, res) => {
     });
   });
   
-  router.get('/getWalkins', authenticate, (req, res) => {
+  router.get('/v1/walkins', authenticate, (req, res) => {
     Walkins.find({
       customerId: req.user._id
     }).then((walkins) => {
-      res.send({walkins});
+      // res.send({walkins});
+      res.send({'statusCode':0,'type':'walkins','message':'walkins added sucessfully','data':walkins});
     }, (e) => {
       res.status(400).send(e);
     });
   });
   
 
-  router.get('/getStats', authenticate, (req, res) => {
-    var start = moment().startOf('day'); // set to 12:00 am today
-    var end = moment().endOf('day'); // set to 23:59 pm today
+  router.get('/v1/stats', authenticate, (req, res) => {
+    var start = moment().startOf('day').unix(); // set to 12:00 am today
+    var end = moment().endOf('day').unix(); // set to 23:59 pm today
     console.log("****** Get Stats  *****\n\n ");
       
     Walkins.find({
     $and :[ { createdDate: {$gte: start, $lt: end }},{ customerId: req.user._id }]
     }).then((customer) => {
       var noOfCustomer=customer.length,orders,grandTotal=0;
-
       console.log(customer.length);
       for(let i=0;i<customer.length;i++){
         // console.log(customer[i].order[0].grandTotal);
@@ -120,7 +119,8 @@ router.post('/walkins', authenticate, (req, res) => {
         numberOfCustomer:noOfCustomer,
         grandTotal:grandTotal,
       }
-      res.send({/* customer, */stats});
+      // res.send({/* customer, */stats});
+      res.send({'statusCode':0,'type':'stats','data':stats});
     }, (e) => {
       res.status(400).send(e);
     });
@@ -128,7 +128,7 @@ router.post('/walkins', authenticate, (req, res) => {
   
   
 
-  router.get('/getStatsInTwoDays/:date1/:date2', authenticate, (req, res) => {
+  router.get('/v1/statsInTwoDays/:date1/:date2', authenticate, (req, res) => {
     console.log("***** get Stats in two dates");
     var startDate=req.params.date1;
     var endDate=req.params.date2;
@@ -139,7 +139,7 @@ router.post('/walkins', authenticate, (req, res) => {
     console.log("****** Get Stats  *****\n\n ");
       
     Walkins.find({
-    $and :[ { createdDate: {$gte: start, $lt: end }},{ customerId: req.user._id }]
+    $and :[ { createdDate: {$gte: startDate, $lt: endDate }},{ customerId: req.user._id }]
     }).then((customer) => {
       var noOfCustomer=customer.length,orders,grandTotal=0;
 
@@ -154,7 +154,7 @@ router.post('/walkins', authenticate, (req, res) => {
         numberOfCustomer:noOfCustomer,
         grandTotal:grandTotal,
       }
-      res.send({/* customer, */stats});
+      res.send({'statusCode':0,'type':'stats in two days','data':stats});
     }, (e) => {
       res.status(400).send(e);
     });

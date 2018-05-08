@@ -10,7 +10,7 @@ var moment = require('moment');
 
 
 
-router.post('/enquiry', authenticate, (req, res) => {
+router.post('/v1/enquirys', authenticate, (req, res) => {
     var enquiry = new Enquiry({
       name: req.body.name,
       number: req.body.number,
@@ -27,8 +27,6 @@ router.post('/enquiry', authenticate, (req, res) => {
     console.log("******// Configuration //******");
     // console.log(walkins);
     enquiry.save().then((doc) => {
-
-
       Customer.find({$and :[ { customerNumber: req.body.customerNumber},{ _creator: req.user._id }]}).exec(function (err, customer) {
         if (err) {
           return res.status(400).send({
@@ -51,7 +49,9 @@ router.post('/enquiry', authenticate, (req, res) => {
             customer.save().then((customer) => {
                 console.log("Customer Saved");
               // res.send(saved); 
-              res.send(doc);
+              // res.send(doc);
+              res.send({'statusCode':0,'type':'enquiry','message':'enquiry Added sucessfully','data':doc});
+              
               
             }, (e) => {
               res.status(400).send(e);
@@ -81,7 +81,9 @@ router.post('/enquiry', authenticate, (req, res) => {
                   message: errorHandler.getErrorMessage(err)
                 });
               } else {
-                res.json(doc);
+                // res.json(doc);
+                res.send({'statusCode':0,'type':'enquiry','message':'enquiry Added sucessfully','data':doc});
+                
               }
             });
           }

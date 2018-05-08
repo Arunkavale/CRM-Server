@@ -32,14 +32,13 @@ var Walkins = mongoose.model('Walkins');
 // }
 
 
-  router.get('/getCustomerByNumber/:customerNumber', authenticate, (req, res) => {
+  router.get('/v1/customerByNumber/:customerNumber', authenticate, (req, res) => {
     console.log("***** Get Customer by Number *****\n\n");
-
     var customerNumber = req.params.customerNumber;
-
-    if (!(typeof(customerNumber)==='number')) {
-      return res.status(404).send({'Message':'please enter valid Phone Number'});
-    }
+    // if (!(typeof(customerNumber)==='number')) {
+    //   // res.send({'statusCode':2,'message':'No data Availbale'});
+    //   return res.status(404).send({'statusCode':1,'message':' Invalid phone number'});
+    // }
     console.log(customerNumber);
     Customer.findOne({
         customerNumber: customerNumber,
@@ -48,7 +47,8 @@ var Walkins = mongoose.model('Walkins');
       if (!customerByNumber) {
         return res.status(404).send();
       }
-      res.send({customerByNumber});
+      // res.send({customerByNumber});
+      res.send({'statusCode':0,'type':'Customer','data':customerByNumber});
     }).catch((e) => {
       res.status(400).send();
     });
@@ -56,13 +56,9 @@ var Walkins = mongoose.model('Walkins');
 
 
 
-  router.post('/createCustomer', authenticate, (req, res) => {
+  router.post('/v1/customers', authenticate, (req, res) => {
     console.log("****** Customer Post *****\n\n ");
     console.log(req.body);
-    
-
-    
-
     Customer.find(
       {$and :[ { customerNumber: req.body.customerNumber},{ _creator: req.user._id }]}
       ).then((customer) => {
@@ -80,12 +76,16 @@ var Walkins = mongoose.model('Walkins');
             
           });
           customer.save().then((customer) => {
-            res.send(customer);
+            // res.send(customer);
+            res.send({'statusCode':0,'type':'appointment','message':'Customer Added sucessfully','data':customer});
+            
           }, (e) => {
             res.status(400).send(e);
           });
         }else{
-          res.send({'Message':"Customer is Present for this Operatore"});
+          // res.send({'Message':"Customer is Present for this Operatore"});
+          res.send({'statusCode':0,'message':'Customer is Present for this Operatore'});
+          
         }
       });
     });
@@ -95,7 +95,7 @@ var Walkins = mongoose.model('Walkins');
    
   
 
-  router.get('/getCustomerByName/:customerName', authenticate, (req, res) => {
+  router.get('/v1/customerByName/:customerName', authenticate, (req, res) => {
     console.log("***** Get Customer by name *****\n\n");
     var customerName = req.params.customerName;
     console.log(customerName);
@@ -104,16 +104,17 @@ var Walkins = mongoose.model('Walkins');
       _creator: req.user._id
     }).then((customerByName) => {
       if (!customerByName) {
-        return res.status(404).send();
+        return res.status(404).send({'statusCode':2,'message':'Customer not found'});
       }
-      res.send({customerByName});
+      // res.send({customerByName});
+      res.send({'statusCode':0,'type':'Customer','data':customerByName});
     }).catch((e) => {
       res.status(400).send();
     });
   });
 
 
-  router.get('/getCustomerInteraction/:phoneNumber', authenticate, (req, res) => {
+  router.get('/v1/customerInteractions/:phoneNumber', authenticate, (req, res) => {
     console.log("***** Get Customer by name *****\n\n");
     var phoneNumber = req.params.phoneNumber;
     var data={};
@@ -166,8 +167,9 @@ var Walkins = mongoose.model('Walkins');
           if (!enquiry) {
             return res.status(404).send();
           }
-
-          res.json(data);
+          // res.json(data);
+          res.send({'statusCode':0,'type':'Enquiry,Appointment,Walkins','data':data});
+          
         }).catch((e) => {
           console.log(e);
           res.status(400).send();
@@ -186,13 +188,15 @@ var Walkins = mongoose.model('Walkins');
   });
 
 
-router.get('/getCustomer', authenticate, (req, res) => {
+router.get('/v1/customers', authenticate, (req, res) => {
     console.log("****** Customer Get *****\n\n ");
       
     Customer.find({
       _creator: req.user._id
     }).then((customer) => {
-      res.send({customer});
+      // res.send({customer});
+      res.send({'statusCode':0,'type':'customers','data':customer});
+      
     }, (e) => {
       res.status(400).send(e);
     });
