@@ -5,6 +5,7 @@ var User = mongoose.model('User');
 var {authenticate} = require('../authenticate');
 var UnattendedCalls=mongoose.model('unattendedCalls');
 var moment = require('moment');
+var {SubAuthenticate} = require('../subAuthenticate');
 
 
 
@@ -42,6 +43,20 @@ router.post('/v1/unattendedCalls', authenticate, (req, res) => {
     });
   });
   
+  router.get('/v1/unattendedCallsBySubscribers/:operatorId', SubAuthenticate, (req, res) => {
+    console.log("******  Unatteded Calls Get ****\n\n");
+    var operatorId=req.params.operatorId;
+
+    UnattendedCalls.find({
+      customerId:operatorId,subscriberId:req.subscriber._id
+    }).then((unattendedCalls) => {
+      // res.send({unattendedCalls});
+      res.send({'statusCode':0,'type':'unattendedCalls By Subscriber','data':unattendedCalls});
+      
+    }, (e) => {
+      res.status(400).send(e);
+    });
+  });
   
   router.delete('/v1/unattendedCalls/:id', authenticate, (req, res) => {
     console.log("****** Unatteded Calls Delete *****\n\n");

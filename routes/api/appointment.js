@@ -10,6 +10,9 @@ var Appointment = mongoose.model('Appointment');
 var Enquiry=mongoose.model('enquiry');
 var Walkins = mongoose.model('Walkins');
 var moment = require('moment');
+var {SubAuthenticate} = require('../subAuthenticate');
+var Customer=mongoose.model('Customer');
+
 
 var async = require('async');
 
@@ -52,23 +55,106 @@ router.get('/v1/appointments', authenticate, (req, res) => {
     });
   });
 
+  
 
-  router.get('/reports:daily', authenticate, (req, res) => {
+  router.get('/v1/todaysReports', SubAuthenticate, (req, res) => {
+    var start = moment().startOf('day').unix(); // set to 12:00 am today
+    var end = moment().endOf('day').unix(); // set to 23:59 pm today
 
-    var start = moment().startOf('day'); // set to 12:00 am today
-    var end = moment().endOf('day'); // set to 23:59 pm today
+    var startDate = moment().startOf('day'); // set to 12:00 am today
+    var endDate = moment().endOf('day'); // set to 23:59 pm today
+    
+    Appointment.find({
+      $and :[ { appointmentTime: {$gte: start, $lt: end }},{ subscriberId: req.subscriber._id }]
+      }).then((appointment) => {
+        console.log("Todays Appointment \n\n\n");
+        console.log(appointment);
+
+        Walkins.find({
+          $and :[ { timeStamp: {$gte: start, $lt: end }},{ subscriberId:  req.subscriber._id }]
+          }).then((walkins) => {
+              var totalWalkins=walkins.length;
+              console.log(totalWalkins);
+
+            Customer.find({
+              $and :[ { createdTime: {$gte: startDate, $lt: endDate }},{ subscriberId:  req.subscriber._id }]
+              }).then((customer) => {
+                console.log(customer);
+                var data={
+                  'totalWalkins':totalWalkins,
+                  'appointment':appointment,
+                  'customer':customer
+                }
+                res.send(data);
+              }, (e) => {
+                res.status(400).send(e);
+              });
+
+
+          }, (e) => {
+            res.status(400).send(e);
+          });
+
+
+        // if(appointment.length>=1){
+        //   res.send({appointment});
+        // }
+        // else{
+        //   res.send({'message':'Sorry no appointment available today'});
+        // }
+
+    }, (e) => {
+      res.status(400).send(e);
+    });
+  });
+
+
+
+  router.get('/v1/todaysReportsForOperator', authenticate , (req, res) => {
+    var start = moment().startOf('day').unix(); // set to 12:00 am today
+    var end = moment().endOf('day').unix(); // set to 23:59 pm today
+    var startDate = moment().startOf('day'); // set to 12:00 am today
+    var endDate = moment().endOf('day'); // set to 23:59 pm today
+    
     Appointment.find({
       $and :[ { appointmentTime: {$gte: start, $lt: end }},{ customerId: req.user._id }]
       }).then((appointment) => {
-        console.log("TOdays Appointment \n\n\n");
+        console.log("Todays Appointment \n\n\n");
         console.log(appointment);
-        if(appointment.length>=1){
-          res.send({appointment});
-        }
-        else{
-          res.send({'message':'Sorry no appointment available today'});
-          
-        }
+
+        Walkins.find({
+          $and :[ { timeStamp: {$gte: start, $lt: end }},{ customerId:  req.user._id }]
+          }).then((walkins) => {
+              var totalWalkins=walkins.length;
+              console.log(totalWalkins);
+
+            Customer.find({
+              $and :[ { createdTime: {$gte: startDate, $lt: endDate }},{ _creator:  req.user._id }]
+              }).then((customer) => {
+                console.log(customer);
+                var data={
+                  'totalWalkins':totalWalkins,
+                  'appointment':appointment,
+                  'customer':customer
+                }
+                res.send(data);
+              }, (e) => {
+                res.status(400).send(e);
+              });
+
+
+          }, (e) => {
+            res.status(400).send(e);
+          });
+
+
+        // if(appointment.length>=1){
+        //   res.send({appointment});
+        // }
+        // else{
+        //   res.send({'message':'Sorry no appointment available today'});
+        // }
+
     }, (e) => {
       res.status(400).send(e);
     });
@@ -77,25 +163,145 @@ router.get('/v1/appointments', authenticate, (req, res) => {
 
 
 
-  router.get('/v1/reports:daily', authenticate, (req, res) => {
-    var start = moment().startOf('day'); // set to 12:00 am today
-    var end = moment().endOf('day'); // set to 23:59 pm today
+
+  router.get('/v1/reports/:fromDate/:toDate', SubAuthenticate, (req, res) => {
+    // var start = new Date(req.params.fromDate * 1000).toISOString(); // set to 12:00 am today
+    // var end = new Date(req.params.toDate * 1000).toISOString(); // set to 23:59 pm today
+
+    var start = moment.unix(req.params.fromDate); 
+    var end = moment.unix(req.params.toDate);
+
+    console.log("inside report dates");
+    console.log(start);
+    console.log(end);
+    var startDate = moment().startOf('day'); // set to 12:00 am today
+    var endDate = moment().endOf('day'); // set to 23:59 pm today
+    
     Appointment.find({
-      $and :[ { appointmentTime: {$gte: start, $lt: end }},{ customerId: req.user._id }]
+      $and :[ { appointmentTime: {$gte: req.params.fromDate, $lt: req.params.toDate }},{ subscriberId: req.subscriber._id }]
       }).then((appointment) => {
-        console.log("TOdays Appointment \n\n\n");
-        console.log(appointment);
-        if(appointment.length>=1){
-          res.send({appointment});
-        }
-        else{
-          res.send({'message':'Sorry no appointment available today'});
-          
-        }
+        console.log("***** Appointment Between Dates ******\n\n\n");
+        // console.log(appointment);
+
+        Walkins.find({
+          $and :[ { timeStamp: {$gte: req.params.fromDate, $lt: req.params.toDate }},{ subscriberId:  req.subscriber._id }]
+          }).then((walkins) => {
+              var totalWalkins=walkins.length;
+              // console.log(totalWalkins);
+
+            Customer.find({
+              $and :[ { createdTime: {$gte: start, $lt: end }},{ subscriberId:  req.subscriber._id }]
+              }).then((customer) => {
+                // console.log(customer);
+                var data={
+                  'totalWalkins':totalWalkins,
+                  'appointment':appointment,
+                  'customer':customer
+                }
+                console.log(data);
+                res.send(data);
+              }, (e) => {
+                res.status(400).send(e);
+              });
+
+
+          }, (e) => {
+            res.status(400).send(e);
+          });
+
+
+        // if(appointment.length>=1){
+        //   res.send({appointment});
+        // }
+        // else{
+        //   res.send({'message':'Sorry no appointment available today'});
+        // }
+
     }, (e) => {
       res.status(400).send(e);
     });
   });
+
+
+
+  router.get('/v1/reportsForOperators/:fromDate/:toDate', authenticate, (req, res) => {
+    // var start = new Date(req.params.fromDate * 1000).toISOString(); // set to 12:00 am today
+    // var end = new Date(req.params.toDate * 1000).toISOString(); // set to 23:59 pm today
+
+    var start = moment.unix(req.params.fromDate); 
+    var end = moment.unix(req.params.toDate);
+
+    console.log("inside report dates");
+    console.log(start);
+    console.log(end);
+    var startDate = moment().startOf('day'); // set to 12:00 am today
+    var endDate = moment().endOf('day'); // set to 23:59 pm today
+    
+    Appointment.find({
+      $and :[ { appointmentTime: {$gte: req.params.fromDate, $lt: req.params.toDate }},{ customerId: req.user._id }]
+      }).then((appointment) => {
+        console.log("***** Appointment Between Dates ******\n\n\n");
+        // console.log(appointment);
+
+        Walkins.find({
+          $and :[ { timeStamp: {$gte: req.params.fromDate, $lt: req.params.toDate }},{ customerId:  req.user._id }]
+          }).then((walkins) => {
+              var totalWalkins=walkins.length;
+              // console.log(totalWalkins);
+
+            Customer.find({
+              $and :[ { createdTime: {$gte: start, $lt: end }},{ _creator:  req.user._id }]
+              }).then((customer) => {
+                // console.log(customer);
+                var data={
+                  'totalWalkins':totalWalkins,
+                  'appointment':appointment,
+                  'customer':customer
+                }
+                console.log(data);
+                res.send(data);
+              }, (e) => {
+                res.status(400).send(e);
+              });
+
+
+          }, (e) => {
+            res.status(400).send(e);
+          });
+
+
+        // if(appointment.length>=1){
+        //   res.send({appointment});
+        // }
+        // else{
+        //   res.send({'message':'Sorry no appointment available today'});
+        // }
+
+    }, (e) => {
+      res.status(400).send(e);
+    });
+  });
+
+
+  // router.get('/v1/reports/daily', authenticate, (req, res) => {
+  //   var start = moment().startOf('day'); // set to 12:00 am today
+  //   var end = moment().endOf('day'); // set to 23:59 pm today
+  //   Appointment.find({
+  //     $and :[ { appointmentTime: {$gte: start, $lt: end }},{ customerId: req.user._id }]
+  //     }).then((appointment) => {
+  //       console.log("TOdays Appointment \n\n\n");
+  //       console.log(appointment);
+  //       if(appointment.length>=1){
+  //         res.send({appointment});
+  //       }
+  //       else{
+  //         res.send({'message':'Sorry no appointment available today'});
+          
+  //       }
+  //   }, (e) => {
+  //     res.status(400).send(e);
+  //   });
+  // });
 
   router.get('/v1/futuresAppointments', authenticate, (req, res) => {
     var start = moment().startOf('day').unix(); // set to 12:00 am today

@@ -128,13 +128,35 @@
         }
     });
   
-    router.get('/v1/getRecordings/:fromDate/:toDate', SubAuthenticate, (req, res) => {
+
+    router.get('/v1/allRecordings/:fromDate/:toDate', SubAuthenticate, (req, res) => {
         var fromDate=moment.unix(req.params.fromDate);
         var toDate=moment.unix(req.params.toDate);
         console.log(fromDate);
         console.log(toDate);
         Call_logs.find({
-            $and :[ { createdTime: {$gte: fromDate, $lt: toDate }},{ subscriberId: req.subscriber._id }]
+            $and :[ { createdTime: {$gte: fromDate, $lte: toDate }},{ subscriberId: req.subscriber._id }]
+        }).then((calllogs) => {
+            if(calllogs[0]==undefined||calllogs[0]==null||calllogs[0]==''){
+                res.send({'statusCode':2,'message':'No data Availbale'});
+            }
+            else{
+                res.send({'statusCode':0,'type':'calllogs','data':calllogs});
+            }
+        }, (e) => {
+          res.status(400).send(e);
+        });
+      });
+
+
+      router.get('/v1/recordingsByOperators/:fromDate/:toDate/:operatorId', SubAuthenticate, (req, res) => {
+        var fromDate=moment.unix(req.params.fromDate);
+        var toDate=moment.unix(req.params.toDate);
+        var operatorId=req.params.operatorId;
+        console.log(fromDate);
+        console.log(toDate);
+        Call_logs.find({
+            $and :[ { createdTime: {$gte: fromDate, $lte: toDate }},{ _creator: operatorId }]
         }).then((calllogs) => {
             if(calllogs[0]==undefined||calllogs[0]==null||calllogs[0]==''){
                 res.send({'statusCode':2,'message':'No data Availbale'});

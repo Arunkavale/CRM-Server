@@ -3,6 +3,9 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 const _ = require('lodash');
 var {SubAuthenticate} = require('../subAuthenticate');
+var Appointment = mongoose.model('Appointment');
+var {authenticate} = require('../authenticate');
+
 var Services=mongoose.model('services');
 var moment = require('moment');
 const {ObjectID} = require('mongodb');
@@ -54,10 +57,10 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
   });
   
   
-  router.get('/v1/services', SubAuthenticate, (req, res) => {
+  router.get('/v1/services', authenticate, (req, res) => {
     console.log("****** Services Get *****\n\n ");
     Services.find({
-      _creator: req.subscriber._id
+      _creator: req.user.subscriberId
     }).then((services) => {
       // console.logser
       res.send({'statusCode':0,'type':'services','data':services[0]});
