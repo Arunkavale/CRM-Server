@@ -41,12 +41,12 @@
             res./* header('user-auth', token). */send({ 'statusCode':0,
             'message':'User Added Sucessfully'});
         }).catch((e) => {
-            if(e.code==11000){
+           /*  if(e.code==11000){
                 res.status(400).send({'statusCode':2,'message':'User already available with same phone number'});
-              }else{
+              } */
                 res.status(400).send({ 'statusCode':1,
-                'message':'Invalid Input'});
-              }
+                'message':e.message});
+              
         })
     });
 

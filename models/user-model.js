@@ -32,22 +32,23 @@ var UserSchema = new mongoose.Schema({
   // },
   password: {
     type: String,
-    require: true,
-    minlength: 8
+    required: [true,'Password is required'],
+    minlength: [8,'Password should be more than 8 charater']
+    // minlength: [,'Password should be more than 8 charater'],
   },
   dob: {
     type: Number,
-    require: true
+    required: [true,'Date of birth is required']
     // minlength: 8
   },
   address: {
     type: String,
-    require: true
+    required: [true,'Address is required']
     // minlength: 8
   },
   email: {
     type: String,
-    required: true,
+    required: [true,'email address is required'],
     trim: true,
     minlength: 5,
     unique: true,
@@ -64,7 +65,7 @@ var UserSchema = new mongoose.Schema({
   // },
   operatorId: {
     type: Number,
-    required: true
+    required: [true,'Operator ID is required']
   },
   subscriberId: {
     type: mongoose.Schema.Types.ObjectId,

@@ -54,7 +54,8 @@ router.post('/v1/enquirys', authenticate, (req, res) => {
               
               
             }, (e) => {
-              res.status(400).send(e);
+              res.status(400).send({ 'statusCode':1,
+              'Error':e.message});
             });
           }
           else{
@@ -93,7 +94,8 @@ router.post('/v1/enquirys', authenticate, (req, res) => {
       // var saved=[{ "status": "success" }]
       // res.send(saved);
     }, (e) => {
-      res.status(400).send(e);
+      res.status(400).send({'statusCode':1,
+      'Error':e.message});
     });
   });
   

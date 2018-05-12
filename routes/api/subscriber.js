@@ -24,11 +24,11 @@ router.post('/v1/subscribers', (req, res) => {
       }
       res.header('subsc-auth', token).send(sucess);
     }).catch((e) => {
-      if(e.code==11000){
-        res.status(400).send({'statusCode':2,'message':'Subscriber already available with same company name'});
-      }else{
-        res.status(400).send({'statusCode':1,'message':' Something went wrong'});
-      }
+      // if(e.code==11000){
+      //   res.status(400).send({'statusCode':2,'message':'Subscriber already available with same company name'});
+      // }else{
+        res.status(400).send({'statusCode':1,'Error':e.message});
+      // }
     })
   });
   

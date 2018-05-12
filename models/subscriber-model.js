@@ -26,33 +26,33 @@ var subscriberSchema = new mongoose.Schema({
   companyName: {
     type: String,
     require: true,
-    minlength: 2,
-    unique:'company Name Already Exist',
-    required: [true, 'UserName is required']
+    minlength: [2,"Comapny name should be more than 2 character"],
+    unique:'Company Name Already Exist',
+    required: [true, 'Company is required']
   },
   password: {
     type: String,
-    require: true,
-    minlength: 8
+    required: [true,'Password is required'],
+    minlength: [8,'Password Should be more than 8 character']
   },
   dob: {
     type: Number,
-    require: true
+    required: [true,'Please Enter date of Birth']
     // minlength: 8
   },
   address: {
     type: String,
-    require: true
+    required: [true,'please Enter Address']
     // minlength: 8
   },
   city: {
     type: String,
-    require: true
+    required: [true,'City is Required']
     // minlength: 8
   },
   email: {
     type: String,
-    required: true,
+    required: [true,'Email Address is Required'],
     trim: true,
     minlength: 5,
     unique: false,
@@ -63,23 +63,24 @@ var subscriberSchema = new mongoose.Schema({
   },
   state: {
     type: String,
-    require: true
+    required: [true,'State is Required']
     // minlength: 8
   },
   country: {
     type: String,
-    require: true
+    required: [true,'Country is required']
     // minlength: 8
   },
   pincode: {
     type: String,
-    require: true
+    required: [true,'Pincode is required']
     // minlength: 8
   },
   mobileNumber: {
     type: Number,
-    require: true,
-    minlength: 10
+    required: [true,'Mobile number is Required'],
+    minlength: [10,'Mobile number length should be more than 10 character'],
+    maxlength: [13,'Mobile number length should be Less than 13 character'],
   },
   industry: {
     type: String,
@@ -89,6 +90,7 @@ var subscriberSchema = new mongoose.Schema({
   package: {
     type: String,
     require: true
+
     // minlength: 8
   },
  

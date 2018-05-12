@@ -26,9 +26,10 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
             _creator :req.subscriber._id
           });
           services.save().then((doc) => {
-            res.send({'statusCode':0,'type':'services','message':'services Added sucessfully','data':doc.Services});
+            res.send({'statusCode':0,'message':'services Added sucessfully','data':doc.Services});
           }, (e) => {
-            res.status(400).send(e);
+            res.status(400).send({ 'statusCode':1,
+            'Error':e.message});
           });
         }
         else{
@@ -37,14 +38,16 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
           services.Services.push(body);
           services.save().then((doc) => {
             // res.send(doc.Services);
-            res.send({'statusCode':0,'type':'services','message':'services Added sucessfully','data':doc.Services});
+            res.send({'statusCode':0,'message':'services Added sucessfully','data':doc.Services});
             
           }, (e) => {
-            res.status(400).send(e);
+            res.status(400).send({ 'statusCode':1,
+            'Error':e.message});
           });
         }
       }, (e) => {
-        res.status(400).send(e);
+        res.status(400).send({ 'statusCode':1,
+        'Error':e.message});
       });
 
 
@@ -63,10 +66,11 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
       _creator: req.user.subscriberId
     }).then((services) => {
       // console.logser
-      res.send({'statusCode':0,'type':'services','data':services[0]});
+      res.send({'statusCode':0,'message':'services','data':services[0].Services});
       // res.send(services[0]);
     }, (e) => {
-      res.status(400).send(e);
+      res.status(400).send({ 'statusCode':1,
+      'Error':e.message});
     });
   });
 
@@ -108,10 +112,11 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
           Services.update(myQuery,newData).then((doc) => {
             console.log("service saved");
             // res.send(doc);
-            res.send({'statusCode':0,'type':'services','message':'Services updated sucessfully'});
+            res.send({'statusCode':0,'message':'Services updated sucessfully'});
             // break;
           }, (e) => {
-            res.status(400).send(e);
+            res.status(400).send({ 'statusCode':1,
+            'Error':e.message});
           });
           break;
         }
@@ -122,7 +127,8 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
   
       // res.send({services});
     }).catch((e) => {
-      res.status(400).send();
+      res.status(400).send({ 'statusCode':1,
+      'Error':e.message});
     })
   });
 
@@ -136,10 +142,11 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
     Services.find({
       $and :[ { createdTime: {$gte: start, $lt: end }},{ _creator: req.subscriber._id }]
     }).then((todayServices) => {
-      res.send({'statusCode':0,'type':'services','data':todayServices});
+      res.send({'statusCode':0,'message':'services','data':todayServices});
       // res.send({todayServices});
     }).catch((e) => {
-      res.status(400).send();
+      res.status(400).send({ 'statusCode':1,
+      'Error':e.message});
     })
   });
   

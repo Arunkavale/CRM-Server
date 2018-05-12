@@ -356,7 +356,7 @@ router.get('/v1/appointments', authenticate, (req, res) => {
     var body = req.body;
     console.log(body);
     // body.appointmentTime=moment.unix(body.appointmentTime);
-    body.dob=moment.unix(body.dob);
+    // body.dob=moment.unix(body.dob);
     Appointment.findOneAndUpdate({ _id: id}, {$set: body}, {new: true}).then((appiontment) => {
       console.log(appiontment);
       if (!appiontment) {
@@ -366,7 +366,8 @@ router.get('/v1/appointments', authenticate, (req, res) => {
       res.send({'statusCode':0,'type':'appointment','message':'appointment updated sucessfully','data':appiontment});
     }).catch((e) => {
       // console.log(e);
-      res.status(400).send();
+      res.status(400).send({ 'statusCode':1,
+      'Error':e.message});
     })
   });
 
@@ -527,7 +528,8 @@ router.get('/v1/appointments', authenticate, (req, res) => {
                   console.log("Customer Saved");
                   res.send({'statusCode':0,'type':'appointment','data':doc});
               }, (e) => {
-                res.status(400).send(e);
+                res.status(400).send({ 'statusCode':1,
+                'message':e.message});
               });
             }
             else{
@@ -558,12 +560,14 @@ router.get('/v1/appointments', authenticate, (req, res) => {
           }
         });
       }, (e) => {
-        res.status(400).send(e);
+        res.status(400).send({ 'statusCode':1,
+        'Error':e.message});
       });
     }
     else{
       // res.status(200).send({'Message':'please send  in proper formate '});
-      res.send({'statusCode':1,'message':'Invalid input'});
+      res.send({ 'statusCode':1,
+      'Error':e.message});
       
     }
   });

@@ -50,7 +50,7 @@ var Walkins = mongoose.model('Walkins');
       // res.send({customerByNumber});
       res.send({'statusCode':0,'type':'Customer','data':customerByNumber});
     }).catch((e) => {
-      res.status(400).send();
+      res.status(400).send(e);
     });
   });
 
@@ -60,7 +60,7 @@ var Walkins = mongoose.model('Walkins');
     console.log("****** Customer Post *****\n\n ");
     console.log(req.body);
     Customer.find(
-      {$and :[ { customerNumber: req.body.customerNumber},{ _creator: req.user._id }]}
+      {$and :[ { customerNumber: req.body.customerNumber},{ subscriberId: req.user.subscriberId }]}
       ).then((customer) => {
         console.log("**** INSide Customer Create *****\n\n\n");
         console.log(customer);
@@ -109,7 +109,7 @@ var Walkins = mongoose.model('Walkins');
       // res.send({customerByName});
       res.send({'statusCode':0,'type':'Customer','data':customerByName});
     }).catch((e) => {
-      res.status(400).send();
+      res.status(400).send(e);
     });
   });
 
@@ -172,18 +172,18 @@ var Walkins = mongoose.model('Walkins');
           
         }).catch((e) => {
           console.log(e);
-          res.status(400).send();
+          res.status(400).send(e);
         });
         // res.send({customerByName});
       }).catch((e) => {
         console.log(e);
-        res.status(400).send();
+        res.status(400).send(e);
       });
       // res.send({customerByName});
     }).catch((e) => {
       console.log(e);
       
-      res.status(400).send();
+      res.status(400).send(e);
     });
   });
 

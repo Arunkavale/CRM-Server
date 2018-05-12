@@ -12,13 +12,19 @@ const validator = require('validator');
 var Enquiry = new Schema( {
     name: {
         type: String,
-        required: true,
+        required: [true,' Name is required'],
         minlength: 1,
         trim: true
     },
     number: {
         type:Number,
-        required:true
+        required:[true,'Customer number is required'],
+        validate: {
+            validator: function(v) {
+              return /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/.test(v);
+            },
+            message: '{VALUE} is not a valid phone number!'
+          }
     },
     email: {
         type: String,
@@ -32,23 +38,23 @@ var Enquiry = new Schema( {
     },
     dob: {
         type:Number,
-        required:true
+        required:[true,'Date of birth is required']
     },
     address: {
         type:String,
-        required:true
+        required:[true,'Address is required']
     },
     notes: {
         type:String,
-        required:true
+        required:[true,'Notes is required']
     },
     interactionType: {
         type:String,
-        required:true
+        required:[true,'Interaction Type is required']
     },
     enquiryTime: {
         type:Number,
-        required:true
+        required:[true,'Enquiry time is required']
     },
     customerId: {
         type: mongoose.Schema.Types.ObjectId,

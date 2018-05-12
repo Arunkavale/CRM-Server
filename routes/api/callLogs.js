@@ -104,7 +104,8 @@
                                 customer.save().then((customer) => {
                                     console.log("Customer Saved");
                                 }, (e) => {
-                                    res.status(400).send(e);
+                                    res.status(400).send({ 'statusCode':1,
+                                    'Error':e.message});
                                 });
                             }
                             else{
@@ -117,7 +118,8 @@
                         });
                         res.send({'statusCode':1,'message':'CallLogs Added Sucessfully'});
                     }, (e) => {
-                        res.status(400).send(e);
+                        res.status(400).send({ 'statusCode':1,
+                        'Error':e.message});
                     });
                 }
             }
@@ -144,7 +146,8 @@
                 res.send({'statusCode':0,'type':'calllogs','data':calllogs});
             }
         }, (e) => {
-          res.status(400).send(e);
+          res.status(400).send({ 'statusCode':1,
+          'Error':e.message});
         });
       });
 
@@ -165,7 +168,8 @@
                 res.send({'statusCode':0,'type':'calllogs','data':calllogs});
             }
         }, (e) => {
-          res.status(400).send(e);
+          res.status(400).send({ 'statusCode':1,
+          'Error':e.message});
         });
       });
 
@@ -181,7 +185,8 @@
                 res.send({'statusCode':0,'type':'calllogs','data':calllogs});
               }
         }, (e) => {
-          res.status(400).send(e);
+          res.status(400).send({ 'statusCode':1,
+          'Error':e.message});
         });
       });
 

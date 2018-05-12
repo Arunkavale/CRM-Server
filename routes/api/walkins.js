@@ -67,7 +67,7 @@ router.post('/v1/walkins', authenticate, (req, res) => {
               // res.send(doc);
               res.send({'statusCode':0,'type':'walkins','message':'walkins added sucessfully','data':doc});
             }, (e) => {
-              res.status(400).send(e);
+              res.status(400).send({'statusCode':1,'Error':e.message});
             });
           }
           else{
@@ -80,10 +80,9 @@ router.post('/v1/walkins', authenticate, (req, res) => {
         }
       });
 
-      
       // res.send(doc);
     }, (e) => {
-      res.status(400).send(e);
+      res.status(400).send({'statusCode':1,'Error':e.message});
     });
   });
   

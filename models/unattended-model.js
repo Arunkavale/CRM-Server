@@ -8,13 +8,18 @@ var mongoose = require('mongoose');
 var UnattendedCalls = mongoose.model('unattendedCalls', {
     number: {
         type: Number,
-        required: true,
-        minlength: 10
-    
+        required: [true,'Customer number is required'],
+        minlength: 10,
+        validate: {
+            validator: function(v) {
+              return /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/.test(v);
+            },
+            message: '{VALUE} is not a valid phone number!'
+          }
     },
     missedcalltime: {
         type:Number,
-        required:true
+        required:[true,'Missed call time is required']
     },
     customerId: {
         type: mongoose.Schema.Types.ObjectId,

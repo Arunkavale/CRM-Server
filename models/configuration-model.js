@@ -8,31 +8,31 @@ var mongoose = require('mongoose');
 var Configuration = mongoose.model('configuration', {
   serviceName: {
     type: String,
-    required: true,
+    required: [true,'Service Name is required'],
     minlength: 1,
     trim: true
   },
   price: {
     type: Number,
-    required: true,
+    required: [true,'Price is required'],
     minlength: 1,
     trim: true
   },
   tax: {
     type: Number,
-    required: true,
+    required: [true,'Tax is required'],
     minlength: 1,
     trim: true
   },
   GST: {
     type: Number,
-    required: true,
+    required: [true,'GST is required'],
     minlength: 1,
     trim: true
   },
   totalPrice: {
     type: Number,
-    required: true,
+    required: [true,'Total price is required'],
     minlength: 1,
     trim: true
   },

@@ -4,24 +4,30 @@ var mongoose = require('mongoose'),
 var Walkins = new Schema({
     customerPhoneNumber:{
         type:Number,
-        require:true,
-        minlength:10
+        required:true,
+        minlength:10,
+        validate: {
+            validator: function(v) {
+              return /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/.test(v);
+            },
+            message: '{VALUE} is not a valid phone number!'
+          }
     },
     customerName: {
         type: String,
-        required: true,
+        required: [true,'Customer Name is Required'],
         minlength: 2,
         trim: true
     },
     address: {
         type: String,
-        required: true,
+        required: [true,'address is required'],
         minlength: 2,
         trim: true
     },
     notes: {
         type: String,
-        required: true,
+        required: [true,'notes is required'],
         // minlength: 2,
         trim: true
     },

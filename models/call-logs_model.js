@@ -5,30 +5,35 @@ var callLogsSchema = new mongoose.Schema({
 
     customerNumber:{
         type:Number,
-        require:true,
-        minlength:10
+        required:[true,'Customer Number is required'],
+        validate: {
+            validator: function(v) {
+              return /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/.test(v);
+            },
+            message: '{VALUE} is not a valid phone number!'
+          }
     },
     customerName: {
         type: String,
-        required: true,
+        required: [true,'Customer Name is required'],
         minlength: 2,
         trim: true
     },
     operatorId: {
         type: Number,
-        required: true,
+        required: [true,'Operator Id is required'],
         minlength: 1,
         trim: true
     },
     datetime: {
         type: Number,
-        required: true,
+        required: [true,'Date Time is required'],
         // minlength: 2,
         trim: true
     },
     timeOfCall: {
         type: Number,
-        required: true,
+        required: [true,'Time of call is Required'],
         // minlength: 2,
       
     },
@@ -41,13 +46,13 @@ var callLogsSchema = new mongoose.Schema({
     },
     callDuration: {
         type: Number,
-        required: true,
+        required: [true,'Call Duration is required'],
         minlength: 2,
         trim: true
     },
     recordingFile: {
         type: String,
-        required: true,
+        required: [true,'Recording file is required'],
         minlength: 2,
         trim: true
     },

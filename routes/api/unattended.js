@@ -25,7 +25,7 @@ router.post('/v1/unattendedCalls', authenticate, (req, res) => {
       // res.send(saved);
       res.send({'statusCode':0,'type':'unattendedCalls','message':'unattendedCalls Added sucessfully','data':doc});
     }, (e) => {
-      res.status(400).send(e);
+      res.status(400).send({'statusCode':1,'Error':e.message});
     });
   });
   
@@ -37,7 +37,6 @@ router.post('/v1/unattendedCalls', authenticate, (req, res) => {
     }).then((unattendedCalls) => {
       // res.send({unattendedCalls});
       res.send({'statusCode':0,'type':'unattendedCalls','data':unattendedCalls});
-      
     }, (e) => {
       res.status(400).send(e);
     });
@@ -77,7 +76,7 @@ router.post('/v1/unattendedCalls', authenticate, (req, res) => {
       // res.send({deleted});
       res.send({'statusCode':0,'type':'unattendedCalls','message':'Deleted Sucessfully'});
     }).catch((e) => {
-      res.status(400).send();
+      res.status(400).send(e);
     });
   });
 module.exports = router;
