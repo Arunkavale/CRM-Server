@@ -15,7 +15,7 @@ var callLogsSchema = new mongoose.Schema({
     },
     customerName: {
         type: String,
-        required: [true,'Customer Name is required'],
+        // required: [true,'Customer Name is required'],
         minlength: 2,
         trim: true
     },
@@ -52,7 +52,7 @@ var callLogsSchema = new mongoose.Schema({
     },
     recordingFile: {
         type: String,
-        required: [true,'Recording file is required'],
+        // required: [true,'Recording file is required'],
         minlength: 2,
         trim: true
     },

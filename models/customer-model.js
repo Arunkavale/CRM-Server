@@ -18,7 +18,7 @@ var Customer =  new Schema({
     },
     customerName: {
         type:String,
-        required:true
+        // required:true
     },
     address: {
         type:String,
