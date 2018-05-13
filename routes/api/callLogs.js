@@ -61,28 +61,28 @@
                         // console.log(doc);
                         console.log("**** call logs Unattended call **** \n\n");
                         // console.log(doc);
-                        // var rmUnattendedCall=req.body;
+                        var rmUnattendedCall=req.body;
                         
-                        // console.log(rmUnattendedCall.length);
-                        // for(var j=0;j<rmUnattendedCall.length;j++){
-                        //     if(rmUnattendedCall[j].callType==='Incoming'||rmUnattendedCall[j].callType==='Outgoing'){
-                        //         console.log("inside incoming and outgoing");
+                        console.log(rmUnattendedCall.length);
+                        for(var j=0;j<rmUnattendedCall.length;j++){
+                            if(rmUnattendedCall[j].callType==='Incoming'||rmUnattendedCall[j].callType==='Outgoing'){
+                                console.log("inside incoming and outgoing");
 
-                        //         UnattendedCalls.remove({
-                        //             'number': rmUnattendedCall[j].customerNumber
-                        //         }).exec(function (err, removedData) {
-                        //             if (err) {
-                        //                 console.log("inside Error");
-                        //                 message: errorHandler.getErrorMessage(err)
-                        //                 return res.status(400).send({
-                        //             });
-                        //             }
-                        //             else{
-                        //                 console.log(removedData);
-                        //             }
-                        //         });
-                        //     }
-                        // }
+                                UnattendedCalls.remove({
+                                    'number': rmUnattendedCall[j].customerNumber
+                                }).exec(function (err, removedData) {
+                                    if (err) {
+                                        console.log("inside Error");
+                                        message: errorHandler.getErrorMessage(err)
+                                        return res.status(400).send({
+                                    });
+                                    }
+                                    else{
+                                        console.log(removedData);
+                                    }
+                                });
+                            }
+                        }
 
 
                        
