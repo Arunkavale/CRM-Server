@@ -76,13 +76,12 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
 
 
   router.delete('/v1/services/:id', (req, res) => {
-    var id = req.params.id;
+    var id1 = req.params.id;
   
     if (!ObjectID.isValid(id)) {
       return res.status(404).send();
     }
-  
-    Services.findByIdAndRemove(id).then((todo) => {
+    Services.findByIdAndRemove(id1).then((todo) => {
       if (!todo) {
         return res.status(404).send();
       }
