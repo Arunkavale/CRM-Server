@@ -73,6 +73,24 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
       'Error':e.message});
     });
   });
+
+
+  router.delete('/v1/services/:id', (req, res) => {
+    var id = req.params.id;
+  
+    if (!ObjectID.isValid(id)) {
+      return res.status(404).send();
+    }
+  
+    Services.findByIdAndRemove(id).then((todo) => {
+      if (!todo) {
+        return res.status(404).send();
+      }
+      res.send({todo});
+    }).catch((e) => {
+      res.status(400).send();
+    });
+  });
   // router.get('/v1/services2', SubAuthenticate, (req, res) => {
   //   console.log("****** Services Get *****\n\n ");
   //   Services.find({
@@ -143,6 +161,8 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
       'Error':e.message});
     })
   });
+
+
 
   router.get('/v1/serviceAvailableTodays', SubAuthenticate, (req, res) => {
     console.log(" ***** Update Service ******\n\n");
