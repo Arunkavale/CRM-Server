@@ -73,19 +73,19 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
       'Error':e.message});
     });
   });
-  router.get('/v1/services2', SubAuthenticate, (req, res) => {
-    console.log("****** Services Get *****\n\n ");
-    Services.find({
-      _creator: req.subscriber.subscriberId
-    }).then((services) => {
-      // console.logser
-      res.send({'statusCode':0,'message':'services','data':services[0].Services});
-      // res.send(services[0]);
-    }, (e) => {
-      res.status(400).send({ 'statusCode':1,
-      'Error':e.message});
-    });
-  });
+  // router.get('/v1/services2', SubAuthenticate, (req, res) => {
+  //   console.log("****** Services Get *****\n\n ");
+  //   Services.find({
+  //     _creator: req.subscriber.subscriberId
+  //   }).then((services) => {
+  //     // console.logser
+  //     res.send({'statusCode':0,'message':'services','data':services[0].Services});
+  //     // res.send(services[0]);
+  //   }, (e) => {
+  //     res.status(400).send({ 'statusCode':1,
+  //     'Error':e.message});
+  //   });
+  // });
 
   router.put('/v1/services/:id', SubAuthenticate, (req, res) => {
     console.log(" ***** Update Service ******\n\n");
