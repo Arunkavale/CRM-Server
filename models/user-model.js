@@ -63,10 +63,10 @@ var UserSchema = new mongoose.Schema({
   //   minlength: 1
     
   // },
-  operatorId: {
-    type: Number,
-    required: [true,'Operator ID is required']
-  },
+  // operatorId: {
+  //   type: Number,
+  //   required: [true,'Operator ID is required']
+  // },
   subscriberId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true
