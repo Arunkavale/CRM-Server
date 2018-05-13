@@ -20,7 +20,7 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
       }).then((services) => {
         console.log(services);
         if(services === undefined || services === null  ){
-          body.id =1
+          // body.id =1
           var services = new Services({
             Services:body,
             _creator :req.subscriber._id
@@ -34,7 +34,7 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
         }
         else{
           console.log("inside services else");
-          body.id=services.Services.length+1;
+          // body.id=services.Services.length+1;
           services.Services.push(body);
           services.save().then((doc) => {
             // res.send(doc.Services);
@@ -64,9 +64,19 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
     console.log("****** Services Get *****\n\n ");
     Services.find({
       _creator: req.user.subscriberId
-    }).then((services) => {
+    }).then((data) => {
       // console.logser
-      res.send({'statusCode':0,'message':'services','data':services[0].Services});
+
+      var ServiceData={
+        '_id':data[0]._id,
+        'statusCode':0,'message':'services',
+        'data':data[0].Services
+      }
+      // var data={
+      //   'statusCode':0,'message':'services','data':services[0].Services
+      // };
+      // data.data._id=services[0]._id;
+      res.send( /* {'statusCode':0,'message':'services','data':ServiceData} */ServiceData );
       // res.send(services[0]);
     }, (e) => {
       res.status(400).send({ 'statusCode':1,
@@ -75,21 +85,21 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
   });
 
 
-  router.delete('/v1/services/:id', (req, res) => {
-    var id1 = req.params.id;
+  // router.delete('/v1/services/:id', (req, res) => {
+  //   var id1 = req.params.id;
   
-    if (!ObjectID.isValid(id1)) {
-      return res.status(404).send();
-    }
-    Services.findByIdAndRemove(id1).then((todo) => {
-      if (!todo) {
-        return res.status(404).send();
-      }
-      res.send({todo});
-    }).catch((e) => {
-      res.status(400).send();
-    });
-  });
+  //   if (!ObjectID.isValid(id1)) {
+  //     return res.status(404).send();
+  //   }
+  //   Services.findByIdAndRemove(id1).then((todo) => {
+  //     if (!todo) {
+  //       return res.status(404).send();
+  //     }
+  //     res.send({todo});
+  //   }).catch((e) => {
+  //     res.status(400).send();
+  //   });
+  // });
   // router.get('/v1/services2', SubAuthenticate, (req, res) => {
   //   console.log("****** Services Get *****\n\n ");
   //   Services.find({
@@ -104,7 +114,7 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
   //   });
   // });
 
-  router.put('/v1/services/:id', SubAuthenticate, (req, res) => {
+  router.put('/v1/services', SubAuthenticate, (req, res) => {
     console.log(" ***** Update Service ******\n\n");
     var id = req.params.id;
     var body = req.body;
@@ -115,27 +125,27 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
       // body._id=new ObjectID();
       
       console.log("inside Service save");
-      console.log(services.Services.length);
-      console.log(services)
-      for(var i=0;i<services.Services.length;i++){
+      // console.log(services.Services.length);
+      // console.log(services)
+      // for(var i=0;i<services.Services.length;i++){
         // console.log(services.Services[i]._id);
-        console.log(id);
-        if(services.Services[i].id==id){
+        // console.log(id);
+        // if(services.Services[i].id==id){
           console.log("inside Service get if condition");
-          console.log(services);
-          services.Services[i]=body;
-          services.Services[i].id=i+1;
-          console.log(services.Services)
+          // console.log(services);
+          services.Services=body;
+          // services.Services[i].id=i+1;
+          // console.log(services.Services)
           var myQuery = {
             _creator: req.subscriber._id
           };
           var newData = {
             $set: {
               Services:services.Services,
-              
             }
           };
-          
+          console.log("   **** inside Servces *****\n\n\n");
+          console.log(services);
           console.log(myQuery);
           console.log(newData);
           Services.update(myQuery,newData).then((doc) => {
@@ -147,12 +157,12 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
             res.status(400).send({ 'statusCode':1,
             'Error':e.message});
           });
-          break;
-        }
+          // break;
+        // }
         // else if(services.Services[i].id!=id){
         //   res.send({'Message':'sevrice not found'});
         // }
-      }
+      // }
   
       // res.send({services});
     }).catch((e) => {

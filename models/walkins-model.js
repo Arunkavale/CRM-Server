@@ -31,7 +31,7 @@ var Walkins = new Schema({
         // minlength: 2,
         trim: true
     },
-    timeStamp: {
+    dob: {
         type: Number,
         required: true,
         // minlength: 2,

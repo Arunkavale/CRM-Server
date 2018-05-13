@@ -18,7 +18,7 @@ router.post('/v1/walkins', authenticate, (req, res) => {
       customerName: req.body.customerName,
       address: req.body.address,
       notes: req.body.notes,
-      timeStamp: /* moment.unix( */req.body.timeStamp,
+      dob: /* moment.unix( */req.body.dob,
       createdDate:new Date().getTime(),
       order:req.body.order, /* [{
         orderList:{
@@ -35,20 +35,21 @@ router.post('/v1/walkins', authenticate, (req, res) => {
    
     walkins.save().then((doc) => {
       console.log("walkin save");
-      var timeStamp=Date.parse(doc.timeStamp);
-      console.log(timeStamp);
-      doc.timeStamp=timeStamp;
-      console.log(doc.timeStamp);
-      console.log(doc);
-      Customer.find( {$and :[ { customerNumber: req.body.customerNumber},{ _creator: req.user._id }]}).exec(function (err, customer) {
+      // var timeStamp=Date.parse(doc.timeStamp);
+      // console.log(timeStamp);
+      // doc.timeStamp=timeStamp;
+      // console.log(doc.timeStamp);
+      // console.log(doc);
+      Customer.find( {$and :[ { customerNumber: req.body.customerPhoneNumber},{ _creator: req.user._id }]}).exec(function (err, customer) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
           });
         } else {
           console.log(customer);
-          if(customer[0]==undefined||customer[0]==null||customer[0]==''){
+          if(customer[0]===undefined||customer[0]===null||customer[0]===''){
             console.log("customer not present");
+            console.log(customer);
             var customer = new Customer({
               customerNumber: req.body.customerPhoneNumber,
               customerName: req.body.customerName,
@@ -71,8 +72,8 @@ router.post('/v1/walkins', authenticate, (req, res) => {
             });
           }
           else{
-            doc.timeStamp=timeStamp;
-            console.log("customer present");
+            // doc.dob=dob; 
+            console.log("   **** customer present ****\n\n\n");
             console.log(doc);
             // res.send(doc);
             res.send({'statusCode':0,'type':'walkins','message':'walkins added sucessfully','data':doc});
