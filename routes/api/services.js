@@ -76,7 +76,7 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
   router.get('/v1/services2', SubAuthenticate, (req, res) => {
     console.log("****** Services Get *****\n\n ");
     Services.find({
-      _creator: req.user.subscriberId
+      _creator: req.subscriber.subscriberId
     }).then((services) => {
       // console.logser
       res.send({'statusCode':0,'message':'services','data':services[0].Services});
