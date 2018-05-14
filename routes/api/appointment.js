@@ -505,7 +505,7 @@ router.get('/v1/appointments', authenticate, (req, res) => {
         subscriberId:req.user.subscriberId
       });
       appiontment.save().then((doc) => {
-        Customer.find({customerNumber : req.body.phoneNumber}).exec(function (err, customer) {
+        Customer.find({$and :[ { customerNumber: req.body.phoneNumber},{ _creator: req.user._id }]}).exec(function (err, customer) {
           if (err) {
             return res.status(400).send({
               message: errorHandler.getErrorMessage(err)
@@ -561,7 +561,7 @@ router.get('/v1/appointments', authenticate, (req, res) => {
         });
       }, (e) => {
         res.status(400).send({ 'statusCode':1,
-        'Error':e.message});
+        'message':e.message});
       });
     }
     else{
