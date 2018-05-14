@@ -100,13 +100,16 @@ router.post('/v1/walkins', authenticate, (req, res) => {
   
 
   router.get('/v1/stats', authenticate, (req, res) => {
-    var start = moment().startOf('day').unix(); // set to 12:00 am today
-    var end = moment().endOf('day').unix(); // set to 23:59 pm today
+    var start = moment().startOf('day'); // set to 12:00 am today
+    var end = moment().endOf('day'); // set to 23:59 pm today
+    console.log(start);
+    console.log(end);
     console.log("****** Get Stats  *****\n\n ");
       
     Walkins.find({
-    $and :[ { createdDate: {$gte: start, $lt: end }},{ customerId: req.user._id }]
+    $and :[ { createdTime: {$gte: start, $lt: end }},{ customerId: req.user._id }]
     }).then((customer) => {
+      console.log(customer);
       var noOfCustomer=customer.length,orders,grandTotal=0;
       console.log(customer.length);
       for(let i=0;i<customer.length;i++){
