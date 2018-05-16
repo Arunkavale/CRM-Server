@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 
+var uniqueValidator = require('mongoose-unique-validator');
 
 /**
  * 
@@ -51,7 +52,7 @@ var UserSchema = new mongoose.Schema({
     required: [true,'email address is required'],
     trim: true,
     minlength: 5,
-    unique: true,
+    unique: ['Email address already available'],
     validate: {
       validator: validator.isEmail,
       message: '{VALUE} is not a valid Email address'
@@ -91,7 +92,8 @@ var UserSchema = new mongoose.Schema({
       message: '{VALUE} is not a valid phone number!'
     },
     required: [true, 'User phone number required'],
-    unique: true
+    unique: ['Phone number is already available']
+    // unique:true
   },
   created: {
     type: Date,
@@ -110,6 +112,7 @@ var UserSchema = new mongoose.Schema({
   }]
 });
 
+UserSchema.plugin(uniqueValidator/* ,{: 'Error, expected {PATH} to be unique.' } */);
 
 UserSchema.methods.toJSON = function () {
   var user = this;

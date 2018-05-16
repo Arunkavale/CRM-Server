@@ -68,7 +68,10 @@ router.post('/v1/walkins', authenticate, (req, res) => {
               // res.send(doc);
               res.send({'statusCode':0,'type':'walkins','message':'walkins added sucessfully','data':doc});
             }, (e) => {
-              res.status(400).send({'statusCode':1,'Error':e.message});
+              var keysOfObject=Object.keys(e.errors);
+                  res.status(400).send({ 'statusCode':1,
+                  'message':e['errors'][keysOfObject[0]].message});
+              // res.status(400).send({'statusCode':1,'Error':e.message});
             });
           }
           else{
@@ -76,14 +79,18 @@ router.post('/v1/walkins', authenticate, (req, res) => {
             console.log("   **** customer present ****\n\n\n");
             console.log(doc);
             // res.send(doc);
-            res.send({'statusCode':0,'type':'walkins','message':'walkins added sucessfully','data':doc});
+            res.send({'statusCode':0,'message':'walkins added sucessfully','data':doc});
           }
         }
       });
 
       // res.send(doc);
     }, (e) => {
-      res.status(400).send({'statusCode':1,'Error':e.message});
+      var keysOfObject=Object.keys(e.errors);
+      res.status(400).send({ 'statusCode':1,
+      'message':e['errors'][keysOfObject[0]].message});
+
+      // res.status(400).send({'statusCode':1,'Error':e.message});
     });
   });
   
@@ -92,7 +99,7 @@ router.post('/v1/walkins', authenticate, (req, res) => {
       customerId: req.user._id
     }).then((walkins) => {
       // res.send({walkins});
-      res.send({'statusCode':0,'type':'walkins','message':'walkins added sucessfully','data':walkins});
+      res.send({'statusCode':0,'message':'walkins ','data':walkins});
     }, (e) => {
       res.status(400).send(e);
     });

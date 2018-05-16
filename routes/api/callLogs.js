@@ -33,8 +33,7 @@
                         subscriberId:req.user.subscriberId
                       });
                       console.log(unattendedCalls);
-                    unattendedCalls.save().then((doc) => {
-
+                        unattendedCalls.save().then((doc) => {
                       }, (e) => {
                         res.status(400).send(e);
                       });
@@ -62,19 +61,17 @@
                         console.log("**** call logs Unattended call **** \n\n");
                         // console.log(doc);
                         var rmUnattendedCall=req.body;
-                        
                         console.log(rmUnattendedCall.length);
                         for(var j=0;j<rmUnattendedCall.length;j++){
                             if(rmUnattendedCall[j].callType==='Incoming'||rmUnattendedCall[j].callType==='Outgoing'){
                                 console.log("inside incoming and outgoing");
-
                                 UnattendedCalls.remove({
                                     'number': rmUnattendedCall[j].customerNumber
                                 }).exec(function (err, removedData) {
                                     if (err) {
                                         console.log("inside Error");
                                         message: errorHandler.getErrorMessage(err)
-                                        return res.status(400).send({
+                                        return res.status(400).send({err
                                     });
                                     }
                                     else{
@@ -83,9 +80,6 @@
                                 });
                             }
                         }
-
-
-                       
 
                         Customer.find({customerNumber : doc.customerNumber}).exec(function (err, customer) {
                             if (err) {
@@ -104,6 +98,7 @@
                                 customer.save().then((customer) => {
                                     console.log("Customer Saved");
                                 }, (e) => {
+
                                     res.status(400).send({ 'statusCode':1,
                                     'Error':e.message});
                                 });
@@ -118,8 +113,11 @@
                         });
                         res.send({'statusCode':1,'message':'CallLogs Added Sucessfully'});
                     }, (e) => {
+                        var keysOfObject=Object.keys(e.errors);
                         res.status(400).send({ 'statusCode':1,
-                        'Error':e.message});
+                        'message':e['errors'][keysOfObject[0]].message});
+                        // res.status(400).send({ 'statusCode':1,
+                        // 'Error':e.message});
                     });
                 }
             }

@@ -50,12 +50,15 @@ router.post('/v1/enquirys', authenticate, (req, res) => {
                 console.log("Customer Saved");
               // res.send(saved); 
               // res.send(doc);
-              res.send({'statusCode':0,'type':'enquiry','message':'enquiry Added sucessfully','data':doc});
-              
+              res.send({'statusCode':0,'message':'enquiry Added sucessfully','data':doc});
               
             }, (e) => {
+              var keysOfObject=Object.keys(e.errors);
               res.status(400).send({ 'statusCode':1,
-              'Error':e.message});
+              'message':e['errors'][keysOfObject[0]].message});
+
+              // res.status(400).send({ 'statusCode':1,
+              // 'Error':e.message});
             });
           }
           else{
@@ -94,8 +97,12 @@ router.post('/v1/enquirys', authenticate, (req, res) => {
       // var saved=[{ "status": "success" }]
       // res.send(saved);
     }, (e) => {
-      res.status(400).send({'statusCode':1,
-      'Error':e.message});
+      var keysOfObject=Object.keys(e.errors);
+              res.status(400).send({ 'statusCode':1,
+              'message':e['errors'][keysOfObject[0]].message});
+
+      // res.status(400).send({'statusCode':1,
+      // 'Error':e.message});
     });
   });
   

@@ -1,11 +1,12 @@
 var mongoose = require('mongoose');
+var uniqueValidator = require('mongoose-unique-validator');
 
 /**
  * 
  * Sevices Model
  * 
  */ 
-var UnattendedCalls = mongoose.model('unattendedCalls', {
+var UnattendedCalls =  new mongoose.Schema({
     number: {
         type: Number,
         required: [true,'Customer number is required'],
@@ -34,5 +35,8 @@ var UnattendedCalls = mongoose.model('unattendedCalls', {
         required: true
       }
 });
+mongoose.model('unattendedCalls',UnattendedCalls);
+
+UnattendedCalls.plugin(uniqueValidator/* ,{: 'Error, expected {PATH} to be unique.' } */);
 
 module.exports = {UnattendedCalls};

@@ -360,10 +360,10 @@ router.get('/v1/appointments', authenticate, (req, res) => {
     Appointment.findOneAndUpdate({ _id: id}, {$set: body}, {new: true}).then((appiontment) => {
       console.log(appiontment);
       if (!appiontment) {
-        return res.status(404).send();
+        return res.status(404).send({'statusCode':1,'message':'appointment not found'});
       }
       // res.send({appiontment});
-      res.send({'statusCode':0,'type':'appointment','message':'appointment updated sucessfully','data':appiontment});
+      res.send({'statusCode':0,'message':'appointment updated sucessfully','data':appiontment});
     }).catch((e) => {
       // console.log(e);
       res.status(400).send({ 'statusCode':1,
@@ -379,9 +379,6 @@ router.get('/v1/appointments', authenticate, (req, res) => {
     // if (!(typeof(id)==='number')) {
     //   return res.status(404).send({'Message':'please enter valid Phone Number'});
     // }
-
-    console.log(id);
-
     Appointment.findOne({$and :[ {phoneNumber:id },{ customerId: req.user._id }]
     }).sort({createdTime: -1}).then((appointment) => {
       console.log(appointment);
@@ -409,64 +406,64 @@ router.get('/v1/appointments', authenticate, (req, res) => {
                 if(appointment.createdTime>enquiry.createdTime){
                   console.log("appointement is latest");
                   if(appointment.createdTime>walkins.createdTime){
-                    res.send({'statusCode':0,"type":"appointment","data":appointment});
+                    res.send({'statusCode':0,"message":"appointment","data":appointment});
                   }
                   else{
-                    res.send({'statusCode':0,"type":"walkins","data":walkins});
+                    res.send({'statusCode':0,"message":"walkins","data":walkins});
                   }
                 }
                 else{
                   if(enquiry.createdTime>walkins.createdTime){
-                    res.send({'statusCode':0,"type":"enquiry","data":enquiry});
+                    res.send({'statusCode':0,"message":"enquiry","data":enquiry});
                   }
                   else{
-                    res.send({'statusCode':0,"type":"walkins","data":walkins});
+                    res.send({'statusCode':0,"message":"walkins","data":walkins});
                   }
                 }
               }
               else if(appointment!=null && enquiry!=null && walkins==null){
                 if(appointment.createdTime>enquiry.createdTime){
-                    res.send({'statusCode':0,"type":"appointment","data":appointment});
+                    res.send({'statusCode':0,"message":"appointment","data":appointment});
                 }
                 else{
-                  res.send({'statusCode':0,"type":"enquiry","data":enquiry});
+                  res.send({'statusCode':0,"message":"enquiry","data":enquiry});
                 }
               }
               else if(appointment!=null && enquiry==null && walkins!=null){
                 if(appointment.createdTime>walkins.createdTime){
-                  res.send({'statusCode':0,"type":"appointment","data":appointment});
+                  res.send({'statusCode':0,"message":"appointment","data":appointment});
                 }
                 else{
-                  res.send({'statusCode':0,"type":"walkins","data":walkins});
+                  res.send({'statusCode':0,"message":"walkins","data":walkins});
                 }
               }
               else if(appointment==null && enquiry!=null && walkins!=null){
                 if(enquiry.createdTime>walkins.createdTime){
-                  res.send({'statusCode':0,"type":"enquiry","data":enquiry});
+                  res.send({'statusCode':0,"message":"enquiry","data":enquiry});
                 }
                 else{
-                  res.send({'statusCode':0,"type":"walkins","data":walkins});
+                  res.send({'statusCode':0,"message":"walkins","data":walkins});
                 }
               }
               else if(appointment==null && enquiry!=null && walkins!=null){
                 if(enquiry.createdTime>walkins.createdTime){
-                  res.send({'statusCode':0,"type":"enquiry","data":enquiry});
+                  res.send({'statusCode':0,"message":"enquiry","data":enquiry});
                 }
                 else{
-                  res.send({'statusCode':0,"type":"walkins","data":walkins});
+                  res.send({'statusCode':0,"message":"walkins","data":walkins});
                 }
               }
               else if(appointment!=null && enquiry==null && walkins==null){
-                res.send({'statusCode':0,"type":"appointment","data":appointment});
+                res.send({'statusCode':0,"message":"appointment","data":appointment});
               }
 
               else if(appointment==null && enquiry==null && walkins!=null){
                 // res.send({"type":"appointment","data":appointment});
-                res.send({'statusCode':0,"type":"walkins","data":walkins});
+                res.send({'statusCode':0,"message":"walkins","data":walkins});
                 
               }
               else if(appointment!=null && enquiry==null && walkins==null){
-                res.send({'statusCode':0,"type":"appointment","data":appointment});
+                res.send({'statusCode':0,"message":"appointment","data":appointment});
               }
               else{
                 res.send({'statusCode':0,'message':"Customer details not available"});
@@ -484,9 +481,6 @@ router.get('/v1/appointments', authenticate, (req, res) => {
     });
   });
   
-
-  
-
 
   router.post('/v1/appointments', authenticate, (req, res) => {
     console.log("****** Appointment Post ****\n\n");
@@ -526,10 +520,13 @@ router.get('/v1/appointments', authenticate, (req, res) => {
               console.log(customer);
               customer.save().then((customer) => {
                   console.log("Customer Saved");
-                  res.send({'statusCode':0,'type':'appointment','data':doc});
+                  res.send({'statusCode':0,'message':'appointment added sucessfully','data':doc});
               }, (e) => {
-                res.status(400).send({ 'statusCode':1,
-                'message':e.message});
+                var keysOfObject=Object.keys(e.errors);
+                  res.status(400).send({ 'statusCode':1,
+                  'message':e['errors'][keysOfObject[0]].message});
+                // res.status(400).send({ 'statusCode':1,
+                // 'message':e.message});
               });
             }
             else{
@@ -553,21 +550,24 @@ router.get('/v1/appointments', authenticate, (req, res) => {
                     message: errorHandler.getErrorMessage(err)
                   });
                 } else {
-                  res.send({'statusCode':0,'type':'appointment','message':'appointment added sucessfully','data':doc});
+                  res.send({'statusCode':0,'message':'appointment added sucessfully','data':doc});
                 }
               });
             }
           }
         });
       }, (e) => {
-        res.status(400).send({ 'statusCode':1,
-        'message':e.message});
+      var keysOfObject=Object.keys(e.errors);
+          res.status(400).send({ 'statusCode':1,
+          'message':e['errors'][keysOfObject[0]].message});
+        // res.status(400).send({ 'statusCode':1,
+        // 'message':e.message});
       });
     }
     else{
-      // res.status(200).send({'Message':'please send  in proper formate '});
-      res.send({ 'statusCode':1,
-      'Error':e.message});
+      res.status(200).send({'Message':'please send  in proper formate '});
+      // res.send({ 'statusCode':1,
+      // 'Error':e.message});
       
     }
   });

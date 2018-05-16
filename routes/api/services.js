@@ -28,8 +28,11 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
           services.save().then((doc) => {
             res.send({'statusCode':0,'message':'services Added sucessfully','data':doc.Services});
           }, (e) => {
+            var keysOfObject=Object.keys(e.errors);
             res.status(400).send({ 'statusCode':1,
-            'Error':e.message});
+            'message':e['errors'][keysOfObject[0]].message});
+            // res.status(400).send({ 'statusCode':1,
+            // 'Error':e.message});
           });
         }
         else{
@@ -39,19 +42,21 @@ router.post('/v1/services', SubAuthenticate, (req, res) => {
           services.save().then((doc) => {
             // res.send(doc.Services);
             res.send({'statusCode':0,'message':'services Added sucessfully','data':doc.Services});
-            
           }, (e) => {
+            var keysOfObject=Object.keys(e.errors);
             res.status(400).send({ 'statusCode':1,
-            'Error':e.message});
+            'message':e['errors'][keysOfObject[0]].message});
+            // res.status(400).send({ 'statusCode':1,
+            // 'Error':e.message});
           });
         }
       }, (e) => {
+        var keysOfObject=Object.keys(e.errors);
         res.status(400).send({ 'statusCode':1,
-        'Error':e.message});
+        'message':e['errors'][keysOfObject[0]].message});
+        // res.status(400).send({ 'statusCode':1,
+        // 'Error':e.message});
       });
-
-
-      
     // }
     // else{
     //   res.send({"message":"data is invalid"});

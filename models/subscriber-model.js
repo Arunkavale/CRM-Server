@@ -3,6 +3,7 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+var uniqueValidator = require('mongoose-unique-validator');
 
 
 /**
@@ -27,8 +28,8 @@ var subscriberSchema = new mongoose.Schema({
     type: String,
     require: true,
     minlength: [2,"Comapny name should be more than 2 character"],
-    unique:'Company Name Already Exist',
-    required: [true, 'Company is required']
+    unique:['Company Name Already Exist'],
+    required: [true, 'Company Name is required']
   },
   password: {
     type: String,
@@ -37,17 +38,17 @@ var subscriberSchema = new mongoose.Schema({
   },
   dob: {
     type: Number,
-    required: [true,'Please Enter date of Birth']
+    required: [true,' Date of Birth is required']
     // minlength: 8
   },
   address: {
     type: String,
-    required: [true,'please Enter Address']
+    required: [true,'Address is required']
     // minlength: 8
   },
   city: {
     type: String,
-    required: [true,'City is Required']
+    required: [true,'  City Name Required']
     // minlength: 8
   },
   email: {
@@ -63,12 +64,12 @@ var subscriberSchema = new mongoose.Schema({
   },
   state: {
     type: String,
-    required: [true,'State is Required']
+    required: [true,'State Name is Required']
     // minlength: 8
   },
   country: {
     type: String,
-    required: [true,'Country is required']
+    required: [true,'Country Name is required']
     // minlength: 8
   },
   pincode: {
@@ -79,24 +80,29 @@ var subscriberSchema = new mongoose.Schema({
   mobileNumber: {
     type: Number,
     required: [true,'Mobile number is Required'],
-    minlength: [10,'Mobile number length should be more than 10 character'],
-    maxlength: [13,'Mobile number length should be Less than 13 character'],
+    validate: {
+      validator: function(v) {
+        return /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/.test(v);
+      },
+      message: '{VALUE} is not a valid phone number!'
+    },
+
   },
-  industry: {
+  Industry: {
     type: String,
-    require: true
+    required: [true, 'Industry is required']
     // minlength: 8
   },
   package: {
     type: String,
-    require: true
+    required: [true,'Package is required']
 
     // minlength: 8
   },
  
   susbscriptionUntil:{
     type: String,
-    require: true,
+    required: [true,'Subscription until is required'],
     minlength: 1
   },
   // industrie: {
@@ -138,6 +144,8 @@ var subscriberSchema = new mongoose.Schema({
     }
   }]
 });
+
+subscriberSchema.plugin(uniqueValidator/* ,{: 'Error, expected {PATH} to be unique.' } */);
 
 
 subscriberSchema.methods.toJSON = function () {
@@ -191,7 +199,6 @@ subscriberSchema.statics.findByCredentials = function (mobileNumber, password) {
     if (!subscriber) {
       return Promise.reject();
     }
-
     return new Promise((resolve, reject) => {
      // Compare the password
       bcrypt.compare(password, subscriber.password, (err, res) => {

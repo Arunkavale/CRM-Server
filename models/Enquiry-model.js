@@ -2,6 +2,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 const validator = require('validator');
+var uniqueValidator = require('mongoose-unique-validator');
 
 
 /**
@@ -28,7 +29,7 @@ var Enquiry = new Schema( {
     },
     email: {
         type: String,
-        required: true,
+        required: [true,'Email Address is required'],
         trim: true,
         minlength: 5,
         validate: {
@@ -67,4 +68,6 @@ var Enquiry = new Schema( {
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 
 mongoose.model('enquiry',Enquiry);
+Enquiry.plugin(uniqueValidator/* ,{: 'Error, expected {PATH} to be unique.' } */);
+
 // module.exports = {Enquiry};

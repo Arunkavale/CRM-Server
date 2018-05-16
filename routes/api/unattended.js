@@ -25,7 +25,11 @@ router.post('/v1/unattendedCalls', authenticate, (req, res) => {
       // res.send(saved);
       res.send({'statusCode':0,'type':'unattendedCalls','message':'unattendedCalls Added sucessfully','data':doc});
     }, (e) => {
-      res.status(400).send({'statusCode':1,'Error':e.message});
+
+      var keysOfObject=Object.keys(e.errors);
+                  res.status(400).send({ 'statusCode':1,
+                  'message':e['errors'][keysOfObject[0]].message});
+      // res.status(400).send({'statusCode':1,'Error':e.message});
     });
   });
   

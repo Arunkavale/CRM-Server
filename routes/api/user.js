@@ -29,8 +29,9 @@
     });
 
     router.post('/v1/users',SubAuthenticate, (req, res) => {
-        console.log("**** User Post *****\n\n");
+        console.log("\n\n\t\t\t\t\t#####****    User Post    *****#####\n\n");
         console.log(req.body);
+        console.log("\n\n");
         var body = req.body;
         // body.dob=moment.unix(body.dob);
         body.subscriberId=req.subscriber._id;
@@ -41,11 +42,16 @@
             res./* header('user-auth', token). */send({ 'statusCode':0,
             'message':'User Added Sucessfully'});
         }).catch((e) => {
-           /*  if(e.code==11000){
-                res.status(400).send({'statusCode':2,'message':'User already available with same phone number'});
-              } */
+           
+            var keysOfObject=Object.keys(e.errors);
+            console.log(keysOfObject)
+            console.log(e);
+            // console.log(errorObject);
+            console.log();
+            // var error=JSON.parse(errorObject);
+            // console.log(e.errors.phone.message);
                 res.status(400).send({ 'statusCode':1,
-                'message':e.message});
+                'message':e['errors'][keysOfObject[0]].message});
               
         })
     });

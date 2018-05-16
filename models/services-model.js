@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
 Schema = mongoose.Schema;
+var uniqueValidator = require('mongoose-unique-validator');
 
 
 /**
@@ -7,10 +8,10 @@ Schema = mongoose.Schema;
  * Sevices Model
  * 
  */ 
-var Services = new Schema(  {
+var Services = new mongoose.Schema(  {
   Services:{
     type:Array,
-    required:true
+    required:[true,'Services is required']
   },
   //   categoryName: {
   //   type: String,
@@ -33,6 +34,7 @@ var Services = new Schema(  {
   } */
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
 
+Services.plugin(uniqueValidator/* ,{: 'Error, expected {PATH} to be unique.' } */);
 
 mongoose.model('services',Services);
 

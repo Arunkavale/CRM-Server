@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var uniqueValidator = require('mongoose-unique-validator');
 
 
 var callLogsSchema = new mongoose.Schema({
@@ -19,15 +20,15 @@ var callLogsSchema = new mongoose.Schema({
         minlength: 2,
         trim: true
     },
-    operatorId: {
-        type: Number,
-        required: [true,'Operator Id is required'],
-        minlength: 1,
-        trim: true
-    },
+    // operatorId: {
+    //     type: Number,
+    //     required: [true,'Operator Id is required'],
+    //     minlength: 1,
+    //     trim: true
+    // },
     datetime: {
         type: Number,
-        required: [true,'Date Time is required'],
+        required: [true,'Date is required'],
         // minlength: 2,
         trim: true
     },
@@ -39,7 +40,7 @@ var callLogsSchema = new mongoose.Schema({
     },
     callType: {
         type: String,
-        required: true,
+        required: [true,'call type is required'],
         minlength: 2,
         enum :['Incoming','Missed','Outgoing'],
         trim: true
@@ -60,6 +61,7 @@ var callLogsSchema = new mongoose.Schema({
         type: String,
         minlength: 2,
         enum: ['Enquiry','Appointment','CancelAppointment','Others'],
+        required:[true,'purpose is rquired'],
         trim: true
     },
     _creator: {
@@ -71,6 +73,8 @@ var callLogsSchema = new mongoose.Schema({
         required: true
       },
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
+
+callLogsSchema.plugin(uniqueValidator/* ,{: 'Error, expected {PATH} to be unique.' } */);
 
 // var Call_logs = mongoose.model('Call_logs',{
     

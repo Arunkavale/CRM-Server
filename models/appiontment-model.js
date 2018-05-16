@@ -2,12 +2,13 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 const validator = require('validator');
+var uniqueValidator = require('mongoose-unique-validator');
 
 
 var Appointment = new Schema({
     name:{
         type:String,
-        require:[true,'Customer name is required'],
+        required:[true,'Customer name is required'],
         minlength:1
     },
     phoneNumber:{
@@ -23,7 +24,7 @@ var Appointment = new Schema({
     },
     email: {
         type: String,
-        required: [true,'Email id is required'],
+        required: [true,'Email address is required'],
         trim: true,
         minlength: 5,
         validate: {
@@ -66,6 +67,9 @@ var Appointment = new Schema({
         required: true
       }
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
+
+Appointment.plugin(uniqueValidator/* ,{: 'Error, expected {PATH} to be unique.' } */);
+
 
 mongoose.model('Appointment',Appointment);
 // module.exports={Appointment};

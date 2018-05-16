@@ -1,10 +1,11 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
+var uniqueValidator = require('mongoose-unique-validator');
     
 var Walkins = new Schema({
     customerPhoneNumber:{
         type:Number,
-        required:true,
+        required:[true,'Customer phone number is required'],
         minlength:10,
         validate: {
             validator: function(v) {
@@ -33,17 +34,17 @@ var Walkins = new Schema({
     },
     dob: {
         type: Number,
-        required: true,
+        required: [true,'Date of birth is required'],
         // minlength: 2,
     },
     createdDate: {
         type: Number,
-        required: true,
+        required: [true,'Created date is required'],
         // minlength: 2,
     },
     order: {
         type: Object,
-        required: true,
+        required: [true,'Order is required'],
     },
     // grandTotal: {
     //     type: Number,
@@ -60,5 +61,7 @@ var Walkins = new Schema({
         required: true
       }
 },{timestamps: { createdAt: 'createdTime', updatedAt: 'updatedTime' }});
+Walkins.plugin(uniqueValidator/* ,{: 'Error, expected {PATH} to be unique.' } */);
+
 mongoose.model('Walkins',Walkins);
 // module.exports={Walkins};
