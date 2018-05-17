@@ -96,7 +96,7 @@ var subscriberSchema = new mongoose.Schema({
   package: {
     type: String,
     required: [true,'Package is required'],
-    enum :['Gold','Platinum']
+    enum :['Golden','Platinum']
 
     // minlength: 8
   },
