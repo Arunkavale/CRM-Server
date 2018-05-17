@@ -13,7 +13,7 @@ var authenticate = (req, res, next) => {
     next();
   }).catch((e) => {
     res.status(401).send({"statusCode": 2,
-    "message": "User is invalid"});
+    "message": "invalid user"});
   });
 };
 
