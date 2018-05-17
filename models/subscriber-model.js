@@ -53,7 +53,7 @@ var subscriberSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true,'Email Address is Required'],
+    // required: [true,'Email Address is Required'],
     trim: true,
     minlength: 5,
     unique: false,
@@ -95,7 +95,8 @@ var subscriberSchema = new mongoose.Schema({
   },
   package: {
     type: String,
-    required: [true,'Package is required']
+    required: [true,'Package is required'],
+    enum :['Gold','Platinum']
 
     // minlength: 8
   },
