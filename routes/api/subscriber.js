@@ -24,6 +24,7 @@ router.post('/v1/subscribers', (req, res) => {
       }
       res.header('subsc-auth', token).send(sucess);
     }).catch((e) => {
+      console.log(e);
       var keysOfObject=Object.keys(e.errors);
       res.status(400).send({ 'statusCode':1,
       'message':e['errors'][keysOfObject[0]].message});
