@@ -28,7 +28,7 @@ var subscriberSchema = new mongoose.Schema({
     type: String,
     require: true,
     minlength: [2,"Comapny name should be more than 2 character"],
-    unique:['Company Name Already Exist'],
+    // unique:['Company Name Already Exist'],
     required: [true, 'Company Name is required']
   },
   password: {
