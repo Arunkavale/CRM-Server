@@ -29,7 +29,7 @@ var Appointment = new Schema({
         minlength: 5,
         validate: {
           validator: validator.isEmail,
-          message: '{VALUE} is not a valid Email address'
+          message: '{VALUE} is not a valid Email address Ex :- abc@xyz.com'
         }
       },
     dob: {

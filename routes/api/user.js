@@ -3,10 +3,8 @@
     var User = mongoose.model('User');
     const _ = require('lodash');
     var moment = require('moment');
-        
     var {SubAuthenticate} = require('../subAuthenticate');
     var Subscriber=mongoose.model('Subscriber');
-
     var {authenticate} = require('../authenticate');
     // var Call_logs=mongoose.model('Call_logs');
     
@@ -21,7 +19,7 @@
         User.find( {
             subscriberId: req.subscriber._id}
         ).then((operators) => {
-            res.send({'statusCode':0,'type':'Operators','data':operators});
+            res.send({'statusCode':0,'data':operators});
           }, (e) => {
             res.status(400).send(e);
           });
@@ -62,7 +60,7 @@
             return user.generateAuthToken().then((token) => {
                 res.header('user-auth', token).send({'statusCode':0,
                 'message':'User Logged In Sucessfully',
-                'data':user});
+                'data':user });
         });
         }).catch((e) => {
             res.status(200).send({  "statusCode": 2,

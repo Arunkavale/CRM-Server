@@ -313,7 +313,7 @@ router.get('/v1/appointments', authenticate, (req, res) => {
         console.log(appointment);
         if(appointment.length>=1){
           // res.send({appointment});
-          res.send({'statusCode':0,"type":"appointment","data":appointment});
+          res.send({'statusCode':0,"message":"appointment","data":appointment});
         }
         else{
           res.send({'statusCode':2,'message':'Sorry no Future appointment available '});
@@ -333,7 +333,7 @@ router.get('/v1/appointments', authenticate, (req, res) => {
         console.log(appointment);
         if(appointment.length>=1){
           // res.send({appointment});
-          res.send({'statusCode':0,"type":"appointment","data":appointment});
+          res.send({'statusCode':0,"message":"appointment","data":appointment});
         }
         else{
           res.send({'statusCode':2,'message':'Sorry no Past appointment available '});
@@ -350,7 +350,7 @@ router.get('/v1/appointments', authenticate, (req, res) => {
     console.log(" ***** Update Appointment ******\n\n");
     var id = req.params.id;
     if (!ObjectID.isValid(id)) {
-      return res.status(404).send({'Message':'please enter proper ID'});
+      return res.status(404).send({'message':'please enter proper ID'});
     }
     console.log(id);
     var body = req.body;
@@ -367,7 +367,7 @@ router.get('/v1/appointments', authenticate, (req, res) => {
     }).catch((e) => {
       // console.log(e);
       res.status(400).send({ 'statusCode':1,
-      'Error':e.message});
+      'message':e.message});
     })
   });
 
@@ -499,6 +499,8 @@ router.get('/v1/appointments', authenticate, (req, res) => {
         subscriberId:req.user.subscriberId
       });
       appiontment.save().then((doc) => {
+
+        
         Customer.find({$and :[ { customerNumber: req.body.phoneNumber},{ _creator: req.user._id }]}).exec(function (err, customer) {
           if (err) {
             return res.status(400).send({
@@ -565,7 +567,7 @@ router.get('/v1/appointments', authenticate, (req, res) => {
       });
     }
     else{
-      res.status(200).send({'Message':'please send  in proper formate '});
+      res.status(200).send({'statusCode':2,'message':'please send  in proper formate '});
       // res.send({ 'statusCode':1,
       // 'Error':e.message});
       

@@ -12,7 +12,6 @@ var {authenticate} = require('../authenticate');
 router.post('/v1/walkins', authenticate, (req, res) => {
     console.log("***** Walkins Post *****\n\n");
     console.log(req.body);
-    
     var walkins = new Walkins({
       customerPhoneNumber: req.body.customerPhoneNumber,
       customerName: req.body.customerName,
@@ -20,13 +19,14 @@ router.post('/v1/walkins', authenticate, (req, res) => {
       notes: req.body.notes,
       dob: /* moment.unix( */req.body.dob,
       createdDate:new Date().getTime(),
-      order:req.body.order, /* [{
+      order:req.body.order,
+      email:req.body.email,
+       /* [{
         orderList:{
           serviceId1:req.body.order[0].serviceId1,
           serviceId3:req.body.serviceId3
         },
       grandTotal: req.body.grandTotal,
-        
       }], */
       customerId: req.user._id,
       subscriberId: req.user.subscriberId
@@ -66,7 +66,7 @@ router.post('/v1/walkins', authenticate, (req, res) => {
               // res.send(saved); 
               
               // res.send(doc);
-              res.send({'statusCode':0,'type':'walkins','message':'walkins added sucessfully','data':doc});
+              res.send({'statusCode':0,'message':'walkins added sucessfully','data':doc});
             }, (e) => {
               var keysOfObject=Object.keys(e.errors);
                   res.status(400).send({ 'statusCode':1,
@@ -130,7 +130,7 @@ router.post('/v1/walkins', authenticate, (req, res) => {
         grandTotal:grandTotal,
       }
       // res.send({/* customer, */stats});
-      res.send({'statusCode':0,'type':'stats','data':stats});
+      res.send({'statusCode':0,'message':'stats','data':stats});
     }, (e) => {
       res.status(400).send(e);
     });
@@ -164,7 +164,7 @@ router.post('/v1/walkins', authenticate, (req, res) => {
         numberOfCustomer:noOfCustomer,
         grandTotal:grandTotal,
       }
-      res.send({'statusCode':0,'type':'stats in two days','data':stats});
+      res.send({'statusCode':0,'message':'stats in two days','data':stats});
     }, (e) => {
       res.status(400).send(e);
     });

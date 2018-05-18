@@ -36,6 +36,7 @@ router.post('/v1/unattendedCalls', authenticate, (req, res) => {
   
   router.get('/v1/unattendedCalls', authenticate, (req, res) => {
     console.log("******  Unatteded Calls Get ****\n\n");
+    
     UnattendedCalls.find({
       customerId: req.user._id
     }).then((unattendedCalls) => {
@@ -76,7 +77,7 @@ router.post('/v1/unattendedCalls', authenticate, (req, res) => {
       if (!unattendedCalls) {
         return res.status(404).send({'statusCode':2,'type':'unattendedCalls','message':'data not available '});
       }
-      var deleted=[{ "status": "success" }]
+      var deleted=[{ "status": "success" }];
       // res.send({deleted});
       res.send({'statusCode':0,'type':'unattendedCalls','message':'Deleted Sucessfully'});
     }).catch((e) => {

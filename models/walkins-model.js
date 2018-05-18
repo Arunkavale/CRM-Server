@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 var uniqueValidator = require('mongoose-unique-validator');
+const validator = require('validator');
     
 var Walkins = new Schema({
     customerPhoneNumber:{
@@ -45,6 +46,16 @@ var Walkins = new Schema({
     order: {
         type: Object,
         required: [true,'Order is required'],
+    },
+    email: {
+        type: String,
+        required: [true,'Email Address is required'],
+        trim: true,
+        minlength: 5,
+        validate: {
+            validator: validator.isEmail,
+            message: '{VALUE} is not a valid Email address'
+        }
     },
     // grandTotal: {
     //     type: Number,
