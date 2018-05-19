@@ -60,7 +60,7 @@ var Walkins = mongoose.model('Walkins');
     console.log("****** Customer Post *****\n\n ");
     console.log(req.body);
     Customer.find(
-      {$and :[ { customerNumber: req.body.customerNumber},{ subscriberId: req.user.subscriberId }]}
+      {$and :[ { customerNumber: req.body.customerNumber, _creator: req.user._id},{ subscriberId: req.user.subscriberId }]}
       ).then((customer) => {
         console.log("**** INSide Customer Create *****\n\n\n");
         console.log(customer);
