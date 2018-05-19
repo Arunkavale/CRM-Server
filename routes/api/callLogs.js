@@ -24,15 +24,17 @@
 
 
                 Customer.find({
-                    _creator: req.user._id,customerNumber : req.body[i].customerNumber
+                    _creator: req.user._id,customerNumber : req.body[0].customerNumber
                   }).then((customer) => {
                     for( i=0;i<data.length;i++){
+                        console.log(customer);
+                        console.log(" ****** inside For loop *******")
                         console.log(data[i]);
-                        if(rmUnattendedCall[i].callType=='Missed'){
+                        if(rmUnattendedCall[0].callType=='Missed'){
                             console.log("inside incoming and outgoing");
                             var unattendedCalls = new UnattendedCalls({
-                                number: rmUnattendedCall[i].customerNumber,
-                                missedcalltime: /* moment.unix( */rmUnattendedCall[i].timeOfCall,
+                                number: rmUnattendedCall[0].customerNumber,
+                                missedcalltime: /* moment.unix( */rmUnattendedCall[0].timeOfCall,
                                 createdTime: new Date().getTime(),
                                 customerId: req.user._id,
                                 subscriberId:req.user.subscriberId
@@ -44,41 +46,65 @@
                               });
                         }
 
-                        if(customer[0].customerNumber==req.body[i].customerNumber){
-                            var calllogs = new Call_logs({
-                                customerNumber: req.body[i].customerNumber,
-                                customerName: customer[0].customerName,
-                                operatorId: req.body[i].operatorId,
-                                datetime: new Date().getTime(),
-                                callType: req.body[i].callType,
-                                timeOfCall: /* moment.unix( */req.body[i].timeOfCall,
-                                callDuration: req.body[i].callDuration,
-                                recordingFile: req.body[i].recordingFile,
-                                purpose: req.body[i].purpose,
-                                _creator: req.user._id,
-                                subscriberId:req.user.subscriberId
-                            });
+                        if(customer[0]!=null || customer[0]!=undefined){
+                            console.log("**** inside customer if ******\n\n");
+                            console.log(customer[0]);
+                            console.log(req.body);
+                            if(customer[0].customerNumber==req.body[i].customerNumber){
+                                var calllogs = new Call_logs({
+                                    customerNumber: req.body[0].customerNumber,
+                                    customerName: customer[0].customerName,
+                                    operatorId: req.body[0].operatorId,
+                                    datetime: new Date().getTime(),
+                                    callType: req.body[0].callType,
+                                    timeOfCall: /* moment.unix( */req.body[0].timeOfCall,
+                                    callDuration: req.body[0].callDuration,
+                                    recordingFile: req.body[0].recordingFile,
+                                    purpose: req.body[0].purpose,
+                                    _creator: req.user._id,
+                                    subscriberId:req.user.subscriberId
+                                });
+                            }
+                            else{
+                                var calllogs = new Call_logs({
+                                    customerNumber: req.body[0].customerNumber,
+                                    // customerName: customer[0].customerName,
+                                    operatorId: req.body[0].operatorId,
+                                    datetime: new Date().getTime(),
+                                    callType: req.body[0].callType,
+                                    timeOfCall: /* moment.unix( */req.body[0].timeOfCall,
+                                    callDuration: req.body[0].callDuration,
+                                    recordingFile: req.body[0].recordingFile,
+                                    purpose: req.body[0].purpose,
+                                    _creator: req.user._id,
+                                    subscriberId:req.user.subscriberId
+                                });
+                            }
+
                         }
                         else{
                             var calllogs = new Call_logs({
-                                customerNumber: req.body[i].customerNumber,
+                                customerNumber: req.body[0].customerNumber,
                                 // customerName: customer[0].customerName,
-                                operatorId: req.body[i].operatorId,
+                                operatorId: req.body[0].operatorId,
                                 datetime: new Date().getTime(),
-                                callType: req.body[i].callType,
-                                timeOfCall: /* moment.unix( */req.body[i].timeOfCall,
-                                callDuration: req.body[i].callDuration,
-                                recordingFile: req.body[i].recordingFile,
-                                purpose: req.body[i].purpose,
+                                callType: req.body[0].callType,
+                                timeOfCall: /* moment.unix( */req.body[0].timeOfCall,
+                                callDuration: req.body[0].callDuration,
+                                recordingFile: req.body[0].recordingFile,
+                                purpose: req.body[0].purpose,
                                 _creator: req.user._id,
                                 subscriberId:req.user.subscriberId
                             });
                         }
-                        if(data[i].callType!=="Missed" && !req.body[i].hasOwnProperty("purpose")){
+                        
+
+                        if(data[0].callType!=="Missed" && !req.body[0].hasOwnProperty("purpose")){
                             // res.send({'Message':'Perpose is required'});
                                 res.send({'statusCode':1,'message':'Invalid input (Purpose is required)'});
                             break;
                         }else{
+                            console.log(calllogs);
                             calllogs.save().then((doc) => {
                                 // console.log(doc);
                                 console.log("**** call logs Unattended call **** \n\n");
